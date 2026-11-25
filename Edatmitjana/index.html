@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'Edat Mitjana: El Viatge Interactiu per la Història</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background-color: #f7f3e8;
+      background-image: radial-gradient(#dfd2b7 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .font-medieval {
+      font-family: 'MedievalSharp', cursive;
+    }
+    .parchment-card {
+      background: #fdfbf5;
+      border: 3px solid #b8860b;
+      box-shadow: 0 10px 20px -5px rgba(184, 134, 11, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .parchment-gold {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 2px solid #d97706;
+    }
+    .tab-btn.active {
+      background-color: #78350f;
+      color: #fef3c7;
+      border-color: #451a03;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    .interactive-hotspot {
+      animation: pulse-ring 2s infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(217, 119, 6, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
+    }
+    .badge-locked {
+      filter: grayscale(1) opacity(0.4);
+    }
+    .badge-unlocked {
+      animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes pop {
+      0% { transform: scale(0.5); }
+      100% { transform: scale(1); }
+    }
+    /* Custom scrollbar for content modules */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1e7d0;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c29b38;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between p-2 sm:p-5">
+
+  <!-- Navigation Header -->
+  <header class="max-w-5xl mx-auto w-full mb-4">
+    <div class="bg-amber-950 text-amber-100 rounded-2xl p-4 border-2 border-amber-600 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <!-- Title & Branding -->
+      <div class="flex items-center gap-3 text-center md:text-left">
+        <div class="text-4xl bg-amber-900 p-2 rounded-xl border border-amber-700 shadow-inner">📜</div>
+        <div>
+          <span class="bg-amber-800 text-amber-200 text-xs font-bold px-2.5 py-0.5 rounded-full border border-amber-600 uppercase tracking-wide">
+            Medi Social • 5è Primària
+          </span>
+          <h1 class="text-2xl sm:text-3xl font-bold font-medieval text-amber-300 tracking-wide mt-0.5">
+            El Viatge per l'Edat Mitjana
+          </h1>
+        </div>
+      </div>
+
+      <!-- Stats & Badges Bar -->
+      <div class="flex items-center gap-4 bg-amber-900/80 px-4 py-2.5 rounded-xl border border-amber-700">
+        <!-- Progress -->
+        <div class="text-center sm:text-right">
+          <div class="text-xs text-amber-300 font-semibold uppercase">Progrés Explorador</div>
+          <div class="flex items-center gap-2">
+            <div class="w-28 bg-amber-950 h-3 rounded-full overflow-hidden border border-amber-700">
+              <div id="unit-progress" class="bg-gradient-to-r from-amber-500 to-amber-300 h-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <span id="progress-text" class="text-sm font-bold text-amber-200">0%</span>
+          </div>
+        </div>
+
+        <!-- Badges counter button -->
+        <button onclick="toggleBadgesModal()" class="flex items-center gap-2 bg-amber-800 hover:bg-amber-700 px-3 py-1.5 rounded-lg border border-amber-500 transition shadow">
+          <span class="text-2xl">🛡️</span>
+          <div class="text-left">
+            <div class="text-[10px] uppercase font-bold text-amber-300">Insignies</div>
+            <div class="text-xs font-black text-white"><span id="badge-count">0</span> / 5</div>
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Navigation Chapter Tabs -->
+  <nav class="max-w-5xl mx-auto w-full mb-6 overflow-x-auto pb-2">
+    <div class="flex gap-2 min-w-max">
+      <button onclick="switchChapter(0)" id="tab-0" class="tab-btn active px-4 py-2.5 rounded-xl border-2 border-amber-800 bg-amber-100 font-bold text-amber-950 text-sm flex items-center gap-2 transition hover:bg-amber-200">
+        <span>🏰</span> 1. Societat i Feudalisme
+      </button>
+      <button onclick="switchChapter(1)" id="tab-1" class="tab-btn px-4 py-2.5 rounded-xl border-2 border-amber-800 bg-amber-100 font-bold text-amber-950 text-sm flex items-center gap-2 transition hover:bg-amber-200">
+        <span>🌙</span> 2. Al-Andalus
+      </button>
+      <button onclick="switchChapter(2)" id="tab-2" class="tab-btn px-4 py-2.5 rounded-xl border-2 border-amber-800 bg-amber-100 font-bold text-amber-950 text-sm flex items-center gap-2 transition hover:bg-amber-200">
+        <span>⚔️</span> 3. Comtats Catalans
+      </button>
+      <button onclick="switchChapter(3)" id="tab-3" class="tab-btn px-4 py-2.5 rounded-xl border-2 border-amber-800 bg-amber-100 font-bold text-amber-950 text-sm flex items-center gap-2 transition hover:bg-amber-200">
+        <span>⛪</span> 4. Monestirs i Ciutats
+      </button>
+      <button onclick="switchChapter(4)" id="tab-4" class="tab-btn px-4 py-2.5 rounded-xl border-2 border-amber-800 bg-amber-100 font-bold text-amber-950 text-sm flex items-center gap-2 transition hover:bg-amber-200">
+        <span>🎨</span> 5. Romànic i Gòtic
+      </button>
+      <button onclick="switchChapter(5)" id="tab-5" class="tab-btn px-4 py-2.5 rounded-xl border-2 border-amber-900 bg-amber-900 text-amber-100 font-bold text-sm flex items-center gap-2 transition hover:bg-amber-800">
+        <span>📖</span> Glossari i Línia del Temps
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Interactive Content Container -->
+  <main class="max-w-5xl mx-auto w-full flex-1">
+
+    <!-- CHAPTER 1: SOCIETAT FEUDAL I CASTELLS -->
+    <section id="chapter-0" class="chapter-content">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Intro & Story -->
+        <div class="lg:col-span-2 parchment-card rounded-2xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1 rounded-full uppercase border border-amber-400">Capítol 1</span>
+            <h2 class="text-2xl sm:text-3xl font-bold font-medieval text-amber-950">Com es vivia al Feudalisme?</h2>
+          </div>
+
+          <!-- Character Guide Bubble -->
+          <div class="bg-amber-100/80 p-4 rounded-xl border border-amber-300 flex items-start gap-4 mb-6">
+            <div class="text-4xl">🤴</div>
+            <div>
+              <h3 class="font-bold text-amber-950 text-sm">El Trobador Guillem us diu:</h3>
+              <p class="text-slate-700 text-sm leading-relaxed mt-1">
+                "Hola, explorador/a! L'Edat Mitjana comença l'any <strong>476 d.C.</strong> amb la caiguda de l'Imperi Romà. En aquesta època, els reis van repartir terres (anomenades <strong>feus</strong>) als nobles a canvi d'ajuda militar. Descobreix com s'organitzava la societat!"
+              </p>
+            </div>
+          </div>
+
+          <!-- Interactive Feudal Pyramid Builder / Explorer -->
+          <h3 class="font-bold text-amber-950 text-lg mb-3 flex items-center gap-2">
+            🔺 La Piràmide Feudal (Fes clic als grups per descobrir-los)
+          </h3>
+          
+          <div class="space-y-2 mb-6">
+            <!-- King -->
+            <button onclick="showFeudalInfo('rei')" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold p-3 rounded-xl border-2 border-amber-700 transition flex items-center justify-between shadow-sm">
+              <span class="flex items-center gap-2"><span>👑</span> EL REI / LA REINA</span>
+              <span class="text-xs bg-amber-800/60 px-2 py-1 rounded">Màxima autoritat</span>
+            </button>
+            <!-- Privileged: Nobles & Clergy -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button onclick="showFeudalInfo('nobles')" class="bg-amber-200 hover:bg-amber-300 text-amber-950 font-bold p-3 rounded-xl border-2 border-amber-400 transition text-left flex items-center gap-2">
+                <span>⚔️</span> Nobles i Cavallers
+              </button>
+              <button onclick="showFeudalInfo('clergat')" class="bg-amber-200 hover:bg-amber-300 text-amber-950 font-bold p-3 rounded-xl border-2 border-amber-400 transition text-left flex items-center gap-2">
+                <span>⛪</span> El Clergat (Bisbes, monjos)
+              </button>
+            </div>
+            <!-- Non-privileged: Peasants & Craftsmen -->
+            <button onclick="showFeudalInfo('pagesos')" class="w-full bg-amber-800 hover:bg-amber-900 text-amber-100 font-bold p-3 rounded-xl border-2 border-amber-950 transition flex items-center justify-between">
+              <span class="flex items-center gap-2"><span>🌾</span> PAGESOS, SERFS I ARTESANS</span>
+              <span class="text-xs bg-amber-950/60 px-2 py-1 rounded">90% de la població (NO Privilegiats)</span>
+            </button>
+          </div>
+
+          <!-- Dynamic Info Box for Feudal Pyramid -->
+          <div id="feudal-info-box" class="bg-amber-50 p-4 rounded-xl border border-amber-300 text-sm text-slate-800">
+            👈 <em>Clica a qualsevol estament de la piràmide per aprendre quina funció tenia!</em>
+          </div>
+
+        </div>
+
+        <!-- Interactive Castle Map Explorer -->
+        <div class="parchment-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-amber-950 text-xl font-medieval mb-3 flex items-center gap-2">
+              🏰 El Castell Medieval
+            </h3>
+            <p class="text-xs text-slate-600 mb-4">
+              Prem els punts per explorar les parts d'un castell fortificat:
+            </p>
+
+            <!-- Graphic interactive diagram -->
+            <div class="relative bg-amber-200/60 rounded-xl p-4 border-2 border-amber-400 min-h-[220px] flex flex-col justify-center items-center gap-3">
+              <div class="text-6xl">🏰</div>
+              <div class="flex flex-wrap gap-2 justify-center">
+                <button onclick="showCastlePart('torre')" class="interactive-hotspot bg-amber-700 text-white font-bold text-xs px-3 py-1.5 rounded-full border border-amber-900 shadow">
+                  🚩 Torre de l'Homenatge
+                </button>
+                <button onclick="showCastlePart('muralla')" class="interactive-hotspot bg-amber-700 text-white font-bold text-xs px-3 py-1.5 rounded-full border border-amber-900 shadow">
+                  🧱 Muralles i Merlets
+                </button>
+                <button onclick="showCastlePart('fossat')" class="interactive-hotspot bg-amber-700 text-white font-bold text-xs px-3 py-1.5 rounded-full border border-amber-900 shadow">
+                  🌊 Fossat i Pont Llevantí
+                </button>
+              </div>
+            </div>
+
+            <!-- Description box -->
+            <div id="castle-part-desc" class="mt-4 bg-amber-100/90 p-3.5 rounded-xl border border-amber-300 text-xs sm:text-sm">
+              💡 Selecciona una part del castell per conèixer la seva funció defensiva.
+            </div>
+          </div>
+
+          <!-- Challenge Mini-quiz -->
+          <div class="mt-6 pt-4 border-t border-amber-200">
+            <button onclick="completeChallenge(0)" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+              <span>⭐</span> Repte del Capítol 1 (Aconsegueix la teva insignia!)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CHAPTER 2: AL-ANDALUS -->
+    <section id="chapter-1" class="chapter-content hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Story & Main Concepts -->
+        <div class="lg:col-span-2 parchment-card rounded-2xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="bg-emerald-200 text-emerald-900 text-xs font-bold px-3 py-1 rounded-full uppercase border border-emerald-400">Capítol 2</span>
+            <h2 class="text-2xl sm:text-3xl font-bold font-medieval text-emerald-950">Al-Andalus: La Península Musulmana</h2>
+          </div>
+
+          <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-300 flex items-start gap-4 mb-6">
+            <div class="text-4xl">🕌</div>
+            <div>
+              <h3 class="font-bold text-emerald-950 text-sm">L'Astrònom d'Al-Andalus us explica:</h3>
+              <p class="text-slate-700 text-sm leading-relaxed mt-1">
+                "L'any <strong>711 d.C.</strong>, els musulmans van arribar a la península Ibèrica i la van anomenar <strong>Al-Andalus</strong>. Durant més de 700 anys van aportar grans coneixements en medicina, matemàtiques, astronomia i agricultura!"
+              </p>
+            </div>
+          </div>
+
+          <!-- Interactive City Medina Explorer -->
+          <h3 class="font-bold text-emerald-950 text-lg mb-3">
+            🏙️ La Ciutat Musulmana (Medina)
+          </h3>
+          <p class="text-xs text-slate-600 mb-3">Toca cada element urbà d'Al-Andalus per descobrir com s'hi vivia:</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+            <button onclick="showAndalusInfo('zoc')" class="p-4 rounded-xl border-2 border-emerald-300 bg-emerald-100/70 hover:bg-emerald-200 text-left transition">
+              <div class="text-2xl mb-1">🛒</div>
+              <div class="font-bold text-emerald-950 text-sm">El Zoc</div>
+              <div class="text-[11px] text-emerald-800">El mercat vibrant</div>
+            </button>
+            <button onclick="showAndalusInfo('mesquita')" class="p-4 rounded-xl border-2 border-emerald-300 bg-emerald-100/70 hover:bg-emerald-200 text-left transition">
+              <div class="text-2xl mb-1">🕌</div>
+              <div class="font-bold text-emerald-950 text-sm">La Mesquita</div>
+              <div class="text-[11px] text-emerald-800">Lloc de pregària</div>
+            </button>
+            <button onclick="showAndalusInfo('alcassaba')" class="p-4 rounded-xl border-2 border-emerald-300 bg-emerald-100/70 hover:bg-emerald-200 text-left transition">
+              <div class="text-2xl mb-1">🏰</div>
+              <div class="font-bold text-emerald-950 text-sm">L'Alcassaba</div>
+              <div class="text-[11px] text-emerald-800">Castell del governador</div>
+            </button>
+          </div>
+
+          <div id="andalus-info-box" class="bg-emerald-100/60 p-4 rounded-xl border border-emerald-300 text-sm text-slate-800">
+            👈 <em>Prem sobre un edifici per aprendre el seu nom i utilitat!</em>
+          </div>
+
+        </div>
+
+        <!-- Innovations & Inventions cards -->
+        <div class="parchment-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-emerald-950 text-xl font-medieval mb-3 flex items-center gap-2">
+              💧 Novetats i Agricultura
+            </h3>
+            <p class="text-xs text-slate-600 mb-4">
+              Els musulmans van revolucionar la península amb grans avenços:
+            </p>
+
+            <div class="space-y-3 text-xs sm:text-sm">
+              <div class="p-3 bg-white rounded-xl border border-emerald-200 shadow-sm flex items-center gap-3">
+                <span class="text-2xl">🍊</span>
+                <div>
+                  <strong class="text-emerald-950 block">Nous Conreus:</strong>
+                  Taronges, llimones, arròs, safrà i cotó.
+                </div>
+              </div>
+              <div class="p-3 bg-white rounded-xl border border-emerald-200 shadow-sm flex items-center gap-3">
+                <span class="text-2xl">⚙️</span>
+                <div>
+                  <strong class="text-emerald-950 block">Sistemes de Regadiu:</strong>
+                  La sénia, les séquies i els canals d'aigua.
+                </div>
+              </div>
+              <div class="p-3 bg-white rounded-xl border border-emerald-200 shadow-sm flex items-center gap-3">
+                <span class="text-2xl">🔢</span>
+                <div>
+                  <strong class="text-emerald-950 block">Ciència i Nombres:</strong>
+                  Els nombres aràbics (0, 1, 2, 3...) i el paper.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-emerald-200">
+            <button onclick="completeChallenge(1)" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+              <span>⭐</span> Repte del Capítol 2 (Aconsegueix la clau d'Al-Andalus!)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CHAPTER 3: COMTATS CATALANS -->
+    <section id="chapter-2" class="chapter-content hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="lg:col-span-2 parchment-card rounded-2xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1 rounded-full uppercase border border-amber-400">Capítol 3</span>
+            <h2 class="text-2xl sm:text-3xl font-bold font-medieval text-amber-950">Els Comtats Catalans i la Corona d'Aragó</h2>
+          </div>
+
+          <div class="bg-amber-100/80 p-4 rounded-xl border border-amber-300 flex items-start gap-4 mb-6">
+            <div class="text-4xl">🛡️</div>
+            <div>
+              <h3 class="font-bold text-amber-950 text-sm">El Cronista Reial explica:</h3>
+              <p class="text-slate-700 text-sm leading-relaxed mt-1">
+                "Per protegir el seu imperi dels musulmans, l'emperador **Carlemany** va crear la **Marca Hispànica** al nord de Catalunya. Amb el temps, aquests comtats es van independitzar i van formar Catalunya!"
+              </p>
+            </div>
+          </div>
+
+          <!-- Interactive Historical Figures -->
+          <h3 class="font-bold text-amber-950 text-lg mb-3">
+            👑 Personatges Clau de la nostra Història
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <button onclick="showCatalanHero('guifre')" class="p-4 rounded-xl border-2 border-amber-400 bg-amber-50 hover:bg-amber-100 text-left transition flex items-start gap-3">
+              <span class="text-3xl">🗡️</span>
+              <div>
+                <h4 class="font-bold text-amber-950 font-medieval text-base">Guifré el Pilós</h4>
+                <p class="text-xs text-slate-600 mt-1">S. IX • Va unificar els comtats de Barcelona, Girona, Osona i Cerdanya.</p>
+              </div>
+            </button>
+
+            <button onclick="showCatalanHero('jaume')" class="p-4 rounded-xl border-2 border-amber-400 bg-amber-50 hover:bg-amber-100 text-left transition flex items-start gap-3">
+              <span class="text-3xl">👑</span>
+              <div>
+                <h4 class="font-bold text-amber-950 font-medieval text-base">Jaume I el Conqueridor</h4>
+                <p class="text-xs text-slate-600 mt-1">S. XIII • Va conquerir Mallorca (1229) i València (1238) ampliant la Corona d'Aragó.</p>
+              </div>
+            </button>
+          </div>
+
+          <div id="catalan-hero-box" class="bg-amber-100/70 p-4 rounded-xl border border-amber-300 text-sm text-slate-800">
+            👈 <em>Selecciona un personatge per llegir la seva història i llegenda!</em>
+          </div>
+
+        </div>
+
+        <!-- Four Bars Legend & Expansion -->
+        <div class="parchment-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-amber-950 text-xl font-medieval mb-3 flex items-center gap-2">
+              📜 La Llegenda de les 4 Barres
+            </h3>
+            
+            <div class="bg-amber-100/60 p-3.5 rounded-xl border border-amber-300 text-xs sm:text-sm text-slate-700 leading-relaxed mb-4">
+              Diu la llegenda popular que el rei franc Carlemany (o Lluís el Piadós) va moure els seus quatre dits tacats de la sang de Guifré el Pilós sobre l'escut daurat del comte, creant així la bandera de Catalunya.
+            </div>
+
+            <div class="flex justify-center my-3">
+              <div class="w-24 h-16 bg-amber-400 border-2 border-amber-700 flex justify-around p-1 rounded shadow-inner">
+                <div class="w-2 h-full bg-red-600 rounded-sm"></div>
+                <div class="w-2 h-full bg-red-600 rounded-sm"></div>
+                <div class="w-2 h-full bg-red-600 rounded-sm"></div>
+                <div class="w-2 h-full bg-red-600 rounded-sm"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-amber-200">
+            <button onclick="completeChallenge(2)" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+              <span>⭐</span> Repte del Capítol 3 (Aconsegueix el teu escut comtal!)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CHAPTER 4: MONESTIRS I CIUTATS -->
+    <section id="chapter-3" class="chapter-content hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="lg:col-span-2 parchment-card rounded-2xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1 rounded-full uppercase border border-amber-400">Capítol 4</span>
+            <h2 class="text-2xl sm:text-3xl font-bold font-medieval text-amber-950">Monestirs, Ciutats i la Pesta Negra</h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <!-- Monasteries & Monks -->
+            <div class="p-4 rounded-xl border-2 border-amber-300 bg-amber-50">
+              <div class="text-3xl mb-2">📜</div>
+              <h3 class="font-bold text-amber-950 text-base font-medieval mb-1">Els Monestirs i l'Escriptorium</h3>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                Els monjos vivien en monestirs dedicats a pregar i treballar. Copiaven tots els llibres a mà a l'<strong>Escriptorium</strong> amb lletres il·lustrades (mutilacions) abans que s'inventés la impremta.
+              </p>
+            </div>
+
+            <!-- Cities & Guilds -->
+            <div class="p-4 rounded-xl border-2 border-amber-300 bg-amber-50">
+              <div class="text-3xl mb-2">🏬</div>
+              <h3 class="font-bold text-amber-950 text-base font-medieval mb-1">La Burgesia i els Gremis</h3>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                A partir del segle XII les ciutats van créixer. Va néixer un nou grup social: la <strong>burgesia</strong> (artesans i comerciants). Els artesans del mateix ofici s'agrupaven en <strong>gremis</strong> (sabaters, fusters, teixidors).
+              </p>
+            </div>
+          </div>
+
+          <!-- The Guild Career Interactive path -->
+          <h3 class="font-bold text-amber-950 text-base mb-2">
+            🛠️ La carrera d'un artesà medieval (Com es pugava de nivell?):
+          </h3>
+          <div class="flex flex-col sm:flex-row items-center gap-2 bg-amber-100/70 p-3 rounded-xl border border-amber-300 text-xs text-center font-bold">
+            <div class="flex-1 bg-white p-2 rounded-lg border border-amber-200 text-amber-950">
+              1. APRENENT
+              <div class="font-normal text-[10px] text-slate-600">Treballa sense sou per aprendre l'ofici</div>
+            </div>
+            <span>➔</span>
+            <div class="flex-1 bg-white p-2 rounded-lg border border-amber-200 text-amber-950">
+              2. OFICIAL
+              <div class="font-normal text-[10px] text-slate-600">Ja cobra un salari pel seu treball</div>
+            </div>
+            <span>➔</span>
+            <div class="flex-1 bg-amber-200 p-2 rounded-lg border border-amber-400 text-amber-950">
+              3. MESTRE
+              <div class="font-normal text-[10px] text-amber-900">Fa una "Obra Mestra" i pot obrir taller</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- The Black Plague & Crisis -->
+        <div class="parchment-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-amber-950 text-xl font-medieval mb-3 flex items-center gap-2">
+              🐀 La Pesta Negra (1348)
+            </h3>
+            
+            <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 text-xs text-rose-950 leading-relaxed mb-4">
+              L'any <strong>1348</strong> va arribar a Europa una epidèmia de malaltia contagiosa molt greu anomenada <strong>Pesta Negra</strong>. Es transmetia per les puces de les rates i va causar la mort de gairebé un terç de la població europea.
+            </div>
+
+            <div class="bg-amber-100/60 p-3 rounded-lg border border-amber-300 text-xs text-amber-900">
+              💡 <strong>Sabies que?</strong> La manca de treballadors després de la pesta va fer que els pagesos rebels demanessin més llibertats als senyors feudals!
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-amber-200">
+            <button onclick="completeChallenge(3)" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+              <span>⭐</span> Repte del Capítol 4 (Aconsegueix la ploma de l'escriptorium!)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CHAPTER 5: ROMÀNIC VS GÒTIC -->
+    <section id="chapter-4" class="chapter-content hidden">
+      <div class="parchment-card rounded-2xl p-6 mb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1 rounded-full uppercase border border-amber-400">Capítol 5</span>
+          <h2 class="text-2xl sm:text-3xl font-bold font-medieval text-amber-950">L'Art Medieval: Romànic vs Gòtic</h2>
+        </div>
+
+        <p class="text-sm text-slate-700 mb-6">
+          A l'Edat Mitjana hi va haver dos grans estils artístics. Compara les seves característiques arquitectòniques en aquesta taula interactiva:
+        </p>
+
+        <!-- Interactive Art Comparison Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Romanesque -->
+          <div class="bg-amber-100/70 rounded-2xl p-5 border-2 border-amber-400">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xl font-bold font-medieval text-amber-950">⛪ ART ROMÀNIC</h3>
+              <span class="text-xs bg-amber-300 text-amber-950 font-bold px-2.5 py-0.5 rounded-full">Segles XI - XII</span>
+            </div>
+
+            <div class="space-y-3 text-xs sm:text-sm">
+              <div class="bg-white p-3 rounded-xl border border-amber-200">
+                <strong>🚪 Arcs:</strong> Arc de mig punt (semicircular).
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-amber-200">
+                <strong>🧱 Murs i Finestres:</strong> Murs molt gruixuts de pedra i finestres molt petites (interiors foscos).
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-amber-200">
+                <strong>🎨 Pintura:</strong> Pintures murals senzilles i expressives (ex: Sant Climent de Taüll).
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-amber-200">
+                <strong>📍 On es troba?</strong> Sobre tot en esglésies de pobles i monestirs del camp.
+              </div>
+            </div>
+          </div>
+
+          <!-- Gothic -->
+          <div class="bg-sky-50 rounded-2xl p-5 border-2 border-sky-400">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xl font-bold font-medieval text-sky-950">🏰 ART GÒTIC</h3>
+              <span class="text-xs bg-sky-200 text-sky-950 font-bold px-2.5 py-0.5 rounded-full">Segles XII - XV</span>
+            </div>
+
+            <div class="space-y-3 text-xs sm:text-sm">
+              <div class="bg-white p-3 rounded-xl border border-sky-200">
+                <strong>🚪 Arcs:</strong> Arc apuntat (en forma d'ogiva o punxa).
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-sky-200">
+                <strong>☀️ Murs i Finestres:</strong> Edificis molt alts amb grans vitralls de colors que deixen passar molta llum.
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-sky-200">
+                <strong>🎨 Escultura:</strong> Més realista i detallada en les façanes i portades.
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-sky-200">
+                <strong>📍 On es troba?</strong> En grans catedrals de les ciutats (ex: Catedral de Barcelona o Girona).
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-amber-200 flex justify-center">
+          <button onclick="completeChallenge(4)" class="bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 px-8 rounded-xl shadow transition flex items-center gap-2 text-sm">
+            <span>⭐</span> Repte del Capítol 5 (Aconsegueix la insignia del vitrall gòtic!)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 6: GLOSSARI I LÍNIA DEL TEMPS -->
+    <section id="chapter-5" class="chapter-content hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Interactive Search Glossary -->
+        <div class="lg:col-span-2 parchment-card rounded-2xl p-6">
+          <h2 class="text-2xl font-bold font-medieval text-amber-950 mb-3 flex items-center gap-2">
+            📖 Glossari de Conceptes Clau
+          </h2>
+          <p class="text-xs text-slate-600 mb-4">Cerca qualsevol paraula del tema per veure la seva definició senzilla:</p>
+
+          <input type="text" id="glossary-search" oninput="filterGlossary()" placeholder="🔍 Cerca paraula (ex: Feu, Zoc, Gremi, Vassall...)" class="w-full p-3 rounded-xl border-2 border-amber-300 bg-white mb-4 text-sm focus:outline-none focus:border-amber-600">
+
+          <div id="glossary-list" class="space-y-2 max-h-96 overflow-y-auto pr-2">
+            <!-- Glossary items populated via JS -->
+          </div>
+        </div>
+
+        <!-- Interactive Timeline -->
+        <div class="parchment-card rounded-2xl p-6">
+          <h2 class="text-xl font-bold font-medieval text-amber-950 mb-4 flex items-center gap-2">
+            ⏳ Línia del Temps
+          </h2>
+
+          <div class="relative border-l-2 border-amber-600 ml-4 space-y-6">
+            <div class="ml-6 relative">
+              <span class="absolute -left-[31px] top-0 bg-amber-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">1</span>
+              <div class="font-bold text-amber-950 text-sm">476 d.C.</div>
+              <div class="text-xs text-slate-600">Caiguda de l'Imperi Romà • Inici de l'Edat Mitjana.</div>
+            </div>
+
+            <div class="ml-6 relative">
+              <span class="absolute -left-[31px] top-0 bg-emerald-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">2</span>
+              <div class="font-bold text-emerald-950 text-sm">711 d.C.</div>
+              <div class="text-xs text-slate-600">Arribada dels musulmans i naixement d'Al-Andalus.</div>
+            </div>
+
+            <div class="ml-6 relative">
+              <span class="absolute -left-[31px] top-0 bg-amber-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">3</span>
+              <div class="font-bold text-amber-950 text-sm">1229 d.C.</div>
+              <div class="text-xs text-slate-600">Jaume I conquesta Mallorca per a la Corona d'Aragó.</div>
+            </div>
+
+            <div class="ml-6 relative">
+              <span class="absolute -left-[31px] top-0 bg-rose-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">4</span>
+              <div class="font-bold text-rose-950 text-sm">1348 d.C.</div>
+              <div class="text-xs text-slate-600">Gran epidèmia de la Pesta Negra a Europa.</div>
+            </div>
+
+            <div class="ml-6 relative">
+              <span class="absolute -left-[31px] top-0 bg-amber-800 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">5</span>
+              <div class="font-bold text-amber-950 text-sm">1492 d.C.</div>
+              <div class="text-xs text-slate-600">Arribada a Amèrica • Final de l'Edat Mitjana.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL DE CHALLENGE / PREGUNTA -->
+  <div id="challenge-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="parchment-card rounded-2xl max-w-lg w-full p-6 text-center shadow-2xl relative animate-pop">
+      <div id="challenge-badge-icon" class="text-5xl mb-3">🛡️</div>
+      <h3 id="challenge-title" class="text-2xl font-bold font-medieval text-amber-950 mb-2">
+        Repte del Capítol!
+      </h3>
+      <p id="challenge-question" class="text-slate-800 text-sm sm:text-base font-semibold mb-6">
+        Carregant pregunta...
+      </p>
+
+      <div id="challenge-options" class="space-y-2 mb-6">
+        <!-- Option buttons dynamically generated -->
+      </div>
+
+      <button onclick="closeChallengeModal()" class="text-xs text-slate-500 hover:text-slate-800 underline">
+        Tancar sense respondre
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL DE Totes les Insígnies -->
+  <div id="badges-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="parchment-card rounded-2xl max-w-md w-full p-6 text-center shadow-2xl relative">
+      <button onclick="toggleBadgesModal()" class="absolute top-3 right-4 text-slate-500 hover:text-slate-800 text-xl font-bold">✕</button>
+      
+      <h3 class="text-2xl font-bold font-medieval text-amber-950 mb-4">
+        🏆 Les teves Insígnees d'Explorador
+      </h3>
+
+      <div class="grid grid-cols-1 gap-3 text-left mb-6">
+        <div id="badge-item-0" class="badge-locked p-3 rounded-xl border border-amber-300 bg-amber-50 flex items-center gap-3">
+          <span class="text-3xl">🏰</span>
+          <div>
+            <div class="font-bold text-amber-950 text-sm">Escuder Feudal</div>
+            <div class="text-xs text-slate-600">Completat el Capítol 1: Societat Feudal.</div>
+          </div>
+        </div>
+
+        <div id="badge-item-1" class="badge-locked p-3 rounded-xl border border-emerald-300 bg-emerald-50 flex items-center gap-3">
+          <span class="text-3xl">🔑</span>
+          <div>
+            <div class="font-bold text-emerald-950 text-sm">Clau d'Al-Andalus</div>
+            <div class="text-xs text-slate-600">Completat el Capítol 2: Al-Andalus.</div>
+          </div>
+        </div>
+
+        <div id="badge-item-2" class="badge-locked p-3 rounded-xl border border-amber-300 bg-amber-50 flex items-center gap-3">
+          <span class="text-3xl">🛡️</span>
+          <div>
+            <div class="font-bold text-amber-950 text-sm">Escut dels Comtats</div>
+            <div class="text-xs text-slate-600">Completat el Capítol 3: Comtats Catalans.</div>
+          </div>
+        </div>
+
+        <div id="badge-item-3" class="badge-locked p-3 rounded-xl border border-amber-300 bg-amber-50 flex items-center gap-3">
+          <span class="text-3xl">✒️</span>
+          <div>
+            <div class="font-bold text-amber-950 text-sm">Ploma de l'Escriptorium</div>
+            <div class="text-xs text-slate-600">Completat el Capítol 4: Monestirs i Ciutats.</div>
+          </div>
+        </div>
+
+        <div id="badge-item-4" class="badge-locked p-3 rounded-xl border border-sky-300 bg-sky-50 flex items-center gap-3">
+          <span class="text-3xl">⛪</span>
+          <div>
+            <div class="font-bold text-sky-950 text-sm">Vitrall Gòtic</div>
+            <div class="text-xs text-slate-600">Completat el Capítol 5: Romànic vs Gòtic.</div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="toggleBadgesModal()" class="w-full bg-amber-800 text-white font-bold py-2.5 rounded-xl text-sm">
+        Continuar l'Aventura
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="max-w-5xl mx-auto w-full text-center mt-6 text-xs text-amber-900/70 font-medium">
+    Unitat Didàctica Interactiva • Coneixement del Medi Social 5è de Primària
+  </footer>
+
+  <script>
+    // Audio synthesizer using Web Audio API for sound effects
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(type) {
+      if (!audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'badge') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(110, now + 0.2);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        }
+      } catch(e) {
+        // Fallback silently if audio context is blocked
+      }
+    }
+
+    // STATE MANAGEMENT
+    let activeChapter = 0;
+    let completedChallenges = [false, false, false, false, false];
+
+    // GLOSSARY DATABASE
+    const glossaryData = [
+      { word: "Al-Andalus", desc: "Nom que van donar els musulmans al territori de la península Ibèrica sota el seu control des de l'any 711." },
+      { word: "Alcassaba", desc: "Recinte fortificat a la part alta de la ciutat musulmana on vivien les autoritats." },
+      { word: "Arc de mig punt", desc: "Arc en forma de mitja circumferència típic de l'art romànic." },
+      { word: "Arc apuntat", desc: "Arc en forma de punxa (ogival) característic de les catedrals gòtiques." },
+      { word: "Burgesia", desc: "Grup social lliure format per comerciants i artesans dels burgs (ciutats)." },
+      { word: "Escriptorium", desc: "Taller del monestir on els monjos copiaven i il·lustraven els llibres a mà." },
+      { word: "Feu", desc: "Gran extensió de terra que el rei o un senyor feudal concedia a un nobel o cavaller." },
+      { word: "Gremi", desc: "Associació d'artesans del mateix ofici (sabaters, teixidors) per protegir el seu treball." },
+      { word: "Marca Hispànica", desc: "Frontera defensiva creada per l'emperador Carlemany als Pirineus per protegir-se dels musulmans." },
+      { word: "Mesquita", desc: "Lloc d'oració i reunió de la comunitat musulmana." },
+      { word: "Pesta Negra", desc: "Epidèmia mortífera que va devastar Europa l'any 1348 transmesa per les puces de les rates." },
+      { word: "Serf", desc: "Pagès no lliure que depenia totalment de la terra d'un senyor feudal." },
+      { word: "Vassallatge", desc: "Pacte de fidelitat i ajuda militar entre un noble i un senyor de rang superior." },
+      { word: "Zoc", desc: "Mercat principal a l'aire lliure de les ciutats musulmanes." }
+    ];
+
+    // CHAPTER CHALLENGES DATABASE
+    const challengesData = [
+      {
+        title: "Repte Capítol 1: Societat Feudal",
+        question: "Quins dos grups formaven la classe dels PRIVILEGIATS a l'Edat Mitjana?",
+        options: [
+          { text: "La noblesa (cavallers) i el clergat (monjos/bisbes)", correct: true },
+          { text: "Els pagesos i els artesans de les ciutats", correct: false },
+          { text: "Els comerciants i els esclaus", correct: false }
+        ]
+      },
+      {
+        title: "Repte Capítol 2: Al-Andalus",
+        question: "Com s'anomenava el mercat vibrant a l'aire lliure de les ciutats musulmanes?",
+        options: [
+          { text: "L'Alcassaba", correct: false },
+          { text: "El Zoc", correct: true },
+          { text: "El Gremi", correct: false }
+        ]
+      },
+      {
+        title: "Repte Capítol 3: Comtats Catalans",
+        question: "Quin rei de la Corona d'Aragó va conquerir Mallorca (1229) i València (1238)?",
+        options: [
+          { text: "Carlemany", correct: false },
+          { text: "Guifré el Pilós", correct: false },
+          { text: "Jaume I el Conqueridor", correct: true }
+        ]
+      },
+      {
+        title: "Repte Capítol 4: Monestirs i Ciutats",
+        question: "Quin era el primer grau d'aprenentatge en la carrera d'un gremi d'artesans?",
+        options: [
+          { text: "Aprenent (sense sou)", correct: true },
+          { text: "Mestre artesà", correct: false },
+          { text: "Oficial amb salari", correct: false }
+        ]
+      },
+      {
+        title: "Repte Capítol 5: Art Romànic vs Gòtic",
+        question: "Quin tipus d'arc utilitzaven principalment les catedrals GÒTIQUES molt altes?",
+        options: [
+          { text: "Arc de mig punt (semicircular)", correct: false },
+          { text: "Arc apuntat (en punxa)", correct: true },
+          { text: "No utilitzaven cap tipus d'arc", correct: false }
+        ]
+      }
+    ];
+
+    // SWITCH CHAPTER TABS
+    function switchChapter(index) {
+      playSound('click');
+      activeChapter = index;
+
+      // Hide all contents
+      document.querySelectorAll('.chapter-content').forEach((el, idx) => {
+        if (idx === index) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+      });
+
+      // Update tab buttons style
+      document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        if (idx === index) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // FEUDAL PYRAMID INFO HANDLER
+    function showFeudalInfo(type) {
+      playSound('click');
+      const box = document.getElementById('feudal-info-box');
+      if (type === 'rei') {
+        box.innerHTML = `<strong>👑 El Rei / La Reina:</strong> Era la màxima autoritat. Considerava tot el regne propietat seva i el dividia en feus per als seus nobles vassalls.`;
+      } else if (type === 'nobles') {
+        box.innerHTML = `<strong>⚔️ La Noblesa:</strong> Vivien en castells fortificats. La seva funció principal era la guerra i defensar el regne (cavallers). Tenien terres i no pagaven impostos.`;
+      } else if (type === 'clergat') {
+        box.innerHTML = `<strong>⛪ El Clergat:</strong> format per monjos, monges, capellans i bisbes. S'encarregaven de la pregària, preservar la cultura en llibres i atendre malalts.`;
+      } else if (type === 'pagesos') {
+        box.innerHTML = `<strong>🌾 Pagesos i Serfs:</strong> Formaven el 90% de la població. Conreaven la terra, cuidaven el ramat i pagaven impostos i collites als nobles. Els serfs no podien abandonar la terra.`;
+      }
+    }
+
+    // CASTLE PARTS EXPLORER
+    function showCastlePart(part) {
+      playSound('click');
+      const desc = document.getElementById('castle-part-desc');
+      if (part === 'torre') {
+        desc.innerHTML = `<strong>🚩 Torre de l'Homenatge:</strong> La torre més alta i segura del castell. On vivia el senyor feudal i l'últim refugi en cas d'atac.`;
+      } else if (part === 'muralla') {
+        desc.innerHTML = `<strong>🧱 Muralles i Merlets:</strong> Grans parets de pedra amb merlets que protegien els soldats per disparar fletxes sense ser vistos.`;
+      } else if (part === 'fossat') {
+        desc.innerHTML = `<strong>🌊 Fossat i Pont Llevantí:</strong> Canal d'aigua que envoltava el castell per evitar que els enemics s'acostessin a la muralla. S'hi entrava per un pont ffet de fusta que es podia pujar.`;
+      }
+    }
+
+    // AL-ANDALUS CITY EXPLORER
+    function showAndalusInfo(type) {
+      playSound('click');
+      const box = document.getElementById('andalus-info-box');
+      if (type === 'zoc') {
+        box.innerHTML = `<strong>🛒 El Zoc:</strong> El cor comercial de la ciutat musulmana. Un mercat ple de parades on es venien espècies, roba de seda, ceràmica i perfums.`;
+      } else if (type === 'mesquita') {
+        box.innerHTML = `<strong>🕌 La Mesquita:</strong> Gran edifici religiós on els musulmans es reunien a pregar i estudiar el Corà. Destaca la de Còrdova.`;
+      } else if (type === 'alcassaba') {
+        box.innerHTML = `<strong>🏰 L'Alcassaba:</strong> Fortalesa militar elevada a la part alta de la ciutat per defensar la ciutat i on vivia el governador.`;
+      }
+    }
+
+    // CATALAN HEROES EXPLORER
+    function showCatalanHero(hero) {
+      playSound('click');
+      const box = document.getElementById('catalan-hero-box');
+      if (hero === 'guifre') {
+        box.innerHTML = `<strong>🗡️ Guifré el Pilós (S. IX):</strong> Va ser el darrer comte de Barcelona nomenat pels reis francs. Va aconseguir transmetre el seu títol als seus fills en herència, creant la dinastia dels comtes de Barcelona.`;
+      } else if (hero === 'jaume') {
+        box.innerHTML = `<strong>👑 Jaume I el Conqueridor (1208 - 1276):</strong> Va regnar durant més de 60 anys. Va conquerir les illes Balears i el regne de València i va escriure la seva pròpia biografia al "Llibre dels Fets".`;
+      }
+    }
+
+    // CHAPTER CHALLENGE MODAL
+    let currentChallengeIndex = 0;
+
+    function completeChallenge(chapterIdx) {
+      playSound('click');
+      currentChallengeIndex = chapterIdx;
+      const data = challengesData[chapterIdx];
+
+      document.getElementById('challenge-title').textContent = data.title;
+      document.getElementById('challenge-question').textContent = data.question;
+
+      const optsContainer = document.getElementById('challenge-options');
+      optsContainer.innerHTML = '';
+
+      data.options.forEach((opt) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-3.5 rounded-xl border-2 border-amber-300 bg-amber-50 hover:bg-amber-100 font-semibold text-amber-950 text-sm transition shadow-sm";
+        btn.textContent = opt.text;
+        btn.onclick = () => answerChallenge(opt.correct, chapterIdx);
+        optsContainer.appendChild(btn);
+      });
+
+      document.getElementById('challenge-modal').classList.remove('hidden');
+    }
+
+    function answerChallenge(isCorrect, chapterIdx) {
+      if (isCorrect) {
+        playSound('badge');
+        completedChallenges[chapterIdx] = true;
+        updateProgress();
+
+        // Unlock badge UI
+        const badgeEl = document.getElementById(`badge-item-${chapterIdx}`);
+        badgeEl.classList.remove('badge-locked');
+        badgeEl.classList.add('badge-unlocked');
+
+        alertCustom("🎉 Enhorabona! Resposta correcta. Has guanyat una nova insígnia d'explorador/a!");
+        closeChallengeModal();
+      } else {
+        playSound('wrong');
+        alertCustom("❌ Ho has intentat! Torna a llegir el capítol i prova-ho de nou.");
+      }
+    }
+
+    function closeChallengeModal() {
+      document.getElementById('challenge-modal').classList.add('hidden');
+    }
+
+    function toggleBadgesModal() {
+      playSound('click');
+      const modal = document.getElementById('badges-modal');
+      modal.classList.toggle('hidden');
+    }
+
+    // UPDATE PROGRESS BAR AND COUNTER
+    function updateProgress() {
+      const total = completedChallenges.length;
+      const completedCount = completedChallenges.filter(Boolean).length;
+      const percent = Math.round((completedCount / total) * 100);
+
+      document.getElementById('unit-progress').style.width = `${percent}%`;
+      document.getElementById('progress-text').textContent = `${percent}%`;
+      document.getElementById('badge-count').textContent = completedCount;
+    }
+
+    // GLOSSARY RENDER & FILTER
+    function renderGlossary(items) {
+      const list = document.getElementById('glossary-list');
+      list.innerHTML = '';
+
+      items.forEach(item => {
+        const el = document.createElement('div');
+        el.className = "p-3 rounded-xl border border-amber-200 bg-amber-50/80 text-xs sm:text-sm";
+        el.innerHTML = `<strong class="text-amber-950 block font-bold mb-0.5">${item.word}</strong><span class="text-slate-700">${item.desc}</span>`;
+        list.appendChild(el);
+      });
+    }
+
+    function filterGlossary() {
+      const query = document.getElementById('glossary-search').value.toLowerCase().trim();
+      const filtered = glossaryData.filter(item => 
+        item.word.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query)
+      );
+      renderGlossary(filtered);
+    }
+
+    // CUSTOM ALERT REPLACEMENT (No alert window)
+    function alertCustom(msg) {
+      const feedbackBanner = document.createElement('div');
+      feedbackBanner.className = "fixed top-5 left-1/2 transform -translate-x-1/2 bg-amber-950 text-amber-100 font-bold px-6 py-3 rounded-2xl border-2 border-amber-500 shadow-2xl text-center text-sm z-50 animate-bounce";
+      feedbackBanner.textContent = msg;
+      document.body.appendChild(feedbackBanner);
+
+      setTimeout(() => {
+        feedbackBanner.remove();
+      }, 3000);
+    }
+
+    // INITIALIZATION ON LOAD
+    window.onload = function() {
+      renderGlossary(glossaryData);
+      updateProgress();
+    };
+  </script>
+</body>
+</html>
