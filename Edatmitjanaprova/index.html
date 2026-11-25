@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aventura Medieval: Tema 8 - L'Edat Mitjana</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background-color: #f6f1e5;
+      background-image: radial-gradient(#e2d7be 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .font-medieval {
+      font-family: 'MedievalSharp', cursive;
+    }
+    .parchment {
+      background: #fdfbf7;
+      border: 4px solid #b8860b;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+    .btn-medieval {
+      background: linear-gradient(180deg, #d97706 0%, #b45309 100%);
+      border: 2px solid #78350f;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+      transition: all 0.2s ease;
+    }
+    .btn-medieval:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(180, 83, 9, 0.4);
+    }
+    .btn-medieval:active {
+      transform: translateY(1px);
+    }
+    .btn-option {
+      transition: all 0.2s ease;
+    }
+    .btn-option:hover:not(:disabled) {
+      transform: translateX(4px);
+      border-color: #d97706;
+      background-color: #fef3c7;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between p-3 sm:p-6">
+
+  <!-- Header -->
+  <header class="max-w-4xl mx-auto w-full text-center my-4">
+    <div class="inline-block bg-amber-900 text-amber-100 px-6 py-2 rounded-full border-2 border-amber-600 shadow-md mb-2">
+      <span class="text-xs font-bold uppercase tracking-widest">Medi Social - 5è de Primària</span>
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-bold font-medieval text-amber-950 tracking-wide drop-shadow-sm">
+      🏰 Descobrim l'Edat Mitjana ⚔️
+    </h1>
+    <p class="text-sm sm:text-base text-amber-900 font-medium mt-1">
+      Posa a prova els teus coneixements sobre el Tema 8
+    </p>
+  </header>
+
+  <!-- Content Container -->
+  <main class="max-w-3xl mx-auto w-full flex-1 flex flex-col justify-center my-2">
+
+    <!-- 1. Pantalla d'Inici -->
+    <div id="start-screen" class="parchment rounded-2xl p-6 sm:p-10 text-center">
+      <div class="text-6xl mb-4">🛡️</div>
+      <h2 class="text-2xl sm:text-3xl font-bold font-medieval text-amber-950 mb-3">
+        Benvingut/da, jove aprenent!
+      </h2>
+      <p class="text-slate-700 text-base sm:text-lg mb-6 leading-relaxed">
+        Tria el teu nivell per començar el viatge en el temps. Respon les preguntes i aprèn amb les explicacions de cada resposta!
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <!-- Nivell 1 -->
+        <button onclick="startGame(1)" class="p-5 rounded-xl border-2 border-amber-600 bg-amber-50 hover:bg-amber-100 text-left transition-all shadow-sm hover:shadow-md group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl">🗡️</span>
+            <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2.5 py-1 rounded-full uppercase">Nivell 1</span>
+          </div>
+          <h3 class="text-xl font-bold text-amber-950 font-medieval group-hover:text-amber-700">Nivell Escuder</h3>
+          <p class="text-xs sm:text-sm text-slate-600 mt-1">
+            Conceptes bàsics: inici de l'Edat Mitjana, Al-Andalus, societat feudal i vida als castells i monestirs.
+          </p>
+        </button>
+
+        <!-- Nivell 2 -->
+        <button onclick="startGame(2)" class="p-5 rounded-xl border-2 border-amber-800 bg-amber-900 text-amber-100 hover:bg-amber-950 text-left transition-all shadow-sm hover:shadow-md group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl">👑</span>
+            <span class="bg-amber-700 text-amber-100 text-xs font-bold px-2.5 py-1 rounded-full uppercase">Nivell 2</span>
+          </div>
+          <h3 class="text-xl font-bold text-amber-200 font-medieval group-hover:text-amber-300">Nivell Cavaller</h3>
+          <p class="text-xs sm:text-sm text-amber-200/80 mt-1">
+            Repte avançat: Comtats catalans, art romànic i gòtic, gremis, la Marca Hispànica i grans fets històrics.
+          </p>
+        </button>
+      </div>
+
+      <div class="bg-amber-100/60 p-3 rounded-lg border border-amber-300 text-xs text-amber-900">
+        💡 <strong>Sabies que?</strong> A cada partida les preguntes canvien. Pots jugar moltes vegades per repassar-ho tot!
+      </div>
+    </div>
+
+    <!-- 2. Pantalla de Joc (Pregunta) -->
+    <div id="quiz-screen" class="hidden parchment rounded-2xl p-5 sm:p-8">
+      
+      <!-- Status Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-amber-200 pb-3 mb-5">
+        <div class="flex items-center gap-2">
+          <span id="level-badge" class="bg-amber-800 text-amber-100 text-xs font-bold px-3 py-1 rounded-full uppercase font-medieval">
+            Nivell 1
+          </span>
+          <span class="text-xs sm:text-sm text-amber-900 font-semibold">
+            Pregunta <span id="current-q">1</span> de <span id="total-q">10</span>
+          </span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
+            Encerts: <span id="score-count">0</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Barra de progrés -->
+      <div class="w-full bg-amber-100 rounded-full h-2.5 mb-6 overflow-hidden">
+        <div id="progress-bar" class="bg-amber-600 h-2.5 rounded-full transition-all duration-300" style="width: 10%"></div>
+      </div>
+
+      <!-- Pregunta -->
+      <h3 id="question-text" class="text-lg sm:text-2xl font-bold text-amber-950 mb-6 leading-snug">
+        Carregant pregunta...
+      </h3>
+
+      <!-- Opcions de resposta -->
+      <div id="options-container" class="space-y-3 mb-6">
+        <!-- Opcions generades dinàmicament -->
+      </div>
+
+      <!-- Explicació pedagògica (Feedback) -->
+      <div id="feedback-box" class="hidden rounded-xl p-4 sm:p-5 mb-6 transition-all">
+        <div id="feedback-header" class="font-bold text-lg mb-2 flex items-center gap-2">
+          <!-- Icona i titol -->
+        </div>
+        <p id="feedback-text" class="text-sm sm:text-base leading-relaxed mb-2">
+          <!-- Explicació -->
+        </p>
+        <div id="correct-answer-reminder" class="hidden mt-2 p-2.5 bg-white/80 rounded-lg text-xs sm:text-sm font-bold text-slate-800 border border-slate-300">
+          <!-- Recordatori -->
+        </div>
+      </div>
+
+      <!-- Botó de Següent -->
+      <div class="flex justify-end">
+        <button id="next-btn" onclick="nextQuestion()" class="hidden btn-medieval text-white font-bold px-6 py-2.5 rounded-xl text-base shadow-md">
+          Següent pregunta ➔
+        </button>
+      </div>
+
+    </div>
+
+    <!-- 3. Pantalla de Resultats -->
+    <div id="results-screen" class="hidden parchment rounded-2xl p-6 sm:p-10 text-center">
+      <div id="result-icon" class="text-6xl mb-3">🏆</div>
+      <h2 id="result-title" class="text-2xl sm:text-4xl font-bold font-medieval text-amber-950 mb-2">
+        Molt bona feina!
+      </h2>
+      <p id="result-subtitle" class="text-slate-700 text-base mb-6">
+        Has completat la teva missió medieval.
+      </p>
+
+      <!-- Score Box -->
+      <div class="bg-amber-100/80 border-2 border-amber-400 rounded-xl p-4 max-w-sm mx-auto mb-6">
+        <div class="text-xs uppercase tracking-wider text-amber-900 font-bold mb-1">Puntuació Final</div>
+        <div class="text-4xl font-black text-amber-950 font-medieval">
+          <span id="final-score">0</span> / <span id="final-total">10</span>
+        </div>
+        <div id="performance-msg" class="text-sm font-semibold text-amber-800 mt-2">
+          ¡Excel·lent!
+        </div>
+      </div>
+
+      <!-- Repàs d'errors -->
+      <div id="review-section" class="text-left mb-6">
+        <h3 class="font-medieval text-xl text-amber-950 font-bold mb-3 border-b-2 border-amber-300 pb-1">
+          📋 Resum del teu viatge (i explicacions):
+        </h3>
+        <div id="review-list" class="space-y-3 max-h-72 overflow-y-auto pr-2">
+          <!-- Llista de preguntes i explicacions -->
+        </div>
+      </div>
+
+      <!-- Botons d'acció -->
+      <div class="flex flex-col sm:flex-row justify-center gap-3">
+        <button onclick="restartLevel()" class="btn-medieval text-white font-bold px-6 py-3 rounded-xl text-base shadow-md">
+          🔄 Tornar a jugar (Noves preguntes)
+        </button>
+        <button onclick="goHome()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-6 py-3 rounded-xl text-base transition-colors border border-slate-300">
+          🏠 Canviar de Nivell
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="max-w-4xl mx-auto w-full text-center my-4 text-xs text-amber-900/70 font-medium">
+    Coneixement del Medi 5è Primària • Unitat 8: L'Edat Mitjana
+  </footer>
+
+  <!-- Lògica del Joc JS -->
+  <script>
+    // BASE DE PREGUNTES AMPLIADA I CATEGORITZADA EN 2 NIVELLS
+    const questionBank = {
+      // NIVELL 1: ESCUDER (Conceptes Bàsics)
+      level1: [
+        {
+          question: "Quan va començar l'Edat Mitjana?",
+          options: [
+            "Amb la caiguda de l'Imperi Romà (any 476)",
+            "Amb el descobriment d'Amèrica (any 1492)",
+            "Amb la invenció de la impremta",
+            "Quan es van construir les primeres piràmides"
+          ],
+          correct: 0,
+          explanation: "L'Edat Mitjana comença l'any 476 d.C. quan cau l'Imperi Romà d'Occident, i s'acaba l'any 1492 quan s'arriba a Amèrica."
+        },
+        {
+          question: "Quins dos grups formaven la classe dels PRIVILEGIATS a la societat feudal?",
+          options: [
+            "La noblesa i el clergat",
+            "Els pagesos i els artesans",
+            "Els comerciants i els esclaus",
+            "Tota la població tenia els mateixos drets"
+          ],
+          correct: 0,
+          explanation: "Els privilegiats eren els nobles (cavallers) i el clergat (monjos i bisbes). Tenien la terra, governaven i NO pagaven impostos."
+        },
+        {
+          question: "Quin nom va rebre el territori de la península Ibèrica governat pels musulmans des de l'any 711?",
+          options: [
+            "Al-Andalus",
+            "Hispània Romana",
+            "Regne de França",
+            "Imperi Bizantí"
+          ],
+          correct: 0,
+          explanation: "Després de la seva arribada l'any 711, els musulmans van anomenar Al-Andalus el territori sota el seu control, establint la capital a Còrdova."
+        },
+        {
+          question: "On vivien principalment els monjos i monges dedicats a la pregària i al treball a l'Edat Mitjana?",
+          options: [
+            "En monestirs",
+            "En castells fortificats",
+            "En zocs de la ciutat",
+            "En vaixells mercants"
+          ],
+          correct: 0,
+          explanation: "Els monjos vivien en monestirs aïllats, on pregaven, conreaven la terra i copiaven llibres a mà a l'escriptori."
+        },
+        {
+          question: "Com s'anomenava el mercat a l'aire lliure que hi havia a les ciutats d'Al-Andalus?",
+          options: [
+            "Zoc",
+            "Càster",
+            "Fòrum",
+            "Gremi"
+          ],
+          correct: 0,
+          explanation: "El zoc era el centre comercial i social de les ciutats musulmanes d'Al-Andalus, on es venien espècies, teles i aliments."
+        },
+        {
+          question: "Quin estil d'art medieval es reconeix per tenir murs molt gruixuts, finestres petites i arcs de mig punt?",
+          options: [
+            "Art Romànic",
+            "Art Gòtic",
+            "Art Renaixentista",
+            "Art Neoclàssic"
+          ],
+          correct: 0,
+          explanation: "L'art romànic (segles XI-XII) utilitzava sostres feixucs de pedra i finestres molt petites perquè els murs fossin resistents com fortaleses."
+        },
+        {
+          question: "Qui eren els pagesos serfs en un feu cristià?",
+          options: [
+            "Pagesos que estaven lligats a la terra del senyor feudal i no podien marxar lliurement",
+            "Cavallers de l'exèrcit del rei",
+            "Comerciants que viatjaven per vendre productes",
+            "Metges i professors de les universitats"
+          ],
+          correct: 0,
+          explanation: "Els serfs eren pagesos no lliures. Depenien del senyor feudal, treballaven les seves terres i li havien de pagar impostos i collites."
+        },
+        {
+          question: "Quin era el lloc religiós principal on els musulmans anaven a pregar a Al-Andalus?",
+          options: [
+            "La mesquita",
+            "La catedral",
+            "El monestir",
+            "El castell"
+          ],
+          correct: 0,
+          explanation: "La mesquita és el temple d'oració de la religió islàmica. Una de les més famoses d'Al-Andalus és la gran Mesquita de Còrdova."
+        },
+        {
+          question: "Quina gran millora agrària van introduir els musulmans a la península Ibèrica?",
+          options: [
+            "Sistemes de regadiu com séquies, canals i la sénia",
+            "Els tractors i màquines de motor",
+            "Els hivernacles de plàstic",
+            "L'ús de fertilitzants químics"
+          ],
+          correct: 0,
+          explanation: "Els musulmans van transformar l'agricultura amb tècniques de regadiu (sénies i séquies) i van introduir conreus com el taronger, l'arròs i el cotó."
+        },
+        {
+          question: "Com s'anomenava l'edifici fortificat on vivia el senyor feudal amb la seva família?",
+          options: [
+            "El castell",
+            "El monestir",
+            "El palau gòtic",
+            "La domus"
+          ],
+          correct: 0,
+          explanation: "El castell era la residencia fortificada del senyor feudal, dissenyada per defensar-se dels atacs amb muralles, torres i un fossat."
+        },
+        {
+          question: "A quina classe social pertanyien els artesans, comerciants i pagesos?",
+          options: [
+            "A la dels NO privilegiats",
+            "A la dels privilegiats",
+            "A la noblesa alta",
+            "Al clergat"
+          ],
+          correct: 0,
+          explanation: "Els no privilegiats eren la majoria de la població. Treballaven dures hores i havien de pagar impostos als nobles i a l'Església."
+        },
+        {
+          question: "Quin esdeveniment marca el final de l'Edat Mitjana l'any 1492?",
+          options: [
+            "L'arribada de Cristòfor Colom a Amèrica",
+            "La construcció del Colosseu de Roma",
+            "La invenció del telèfon",
+            "La Primera Guerra Mundial"
+          ],
+          correct: 0,
+          explanation: "L'any 1492 es considera el final de l'Edat Mitjana i l'inici de l'Edat Moderna gràcies a l'arribada d'Europa al continent americà."
+        }
+      ],
+
+      // NIVELL 2: CAVALLER (Avançat)
+      level2: [
+        {
+          question: "Quina zona de defensa fronterera va crear l'emperador Carlemany al sud dels Pirineus?",
+          options: [
+            "La Marca Hispànica",
+            "El Califat de Còrdova",
+            "El Regne de Castella",
+            "El Taifa de Lleida"
+          ],
+          correct: 0,
+          explanation: "La Marca Hispànica era una línia de comtats fortificats creada pels carolingis per protegir el seu imperi dels musulmans d'Al-Andalus."
+        },
+        {
+          question: "En quines tres etapes principals es divideix la història política d'Al-Andalus?",
+          options: [
+            "Emirat, Califat i Regnes de Taifes",
+            "República, Imperi i Dictadura",
+            "Monarquia, Senat i Parlament",
+            "Edat Antiga, Mitjana i Moderna"
+          ],
+          correct: 0,
+          explanation: "Al-Andalus va passar per l'Emirat (dependent de Damasc), el Califat de Còrdova (època de màxima esplendor) i la divisió en regnes de Taifes."
+        },
+        {
+          question: "Quin rei de la Corona d'Aragó va conquerir Mallorca (1229) i València (1238)?",
+          options: [
+            "Jaume I el Conqueridor",
+            "Guifré el Pilós",
+            "Martí l'Humà",
+            "Carlemany"
+          ],
+          correct: 0,
+          explanation: "Jaume I el Conqueridor és un dels reis més importants de la història de Catalunya i la Corona d'Aragó per la seva gran expansió territorial."
+        },
+        {
+          question: "Com es deia el pacte medieval on un noble jura fidelitat i ajuda militar a un senyor superior a canvi d'un feu?",
+          options: [
+            "Vassallatge",
+            "Gremialisme",
+            "Remença",
+            "Treva de Déu"
+          ],
+          correct: 0,
+          explanation: "En la cerimònia de vassallatge, el vassall prometia suport militar i consell al seu senyor a canvi de protecció i un territori (feu)."
+        },
+        {
+          question: "Quins tres graus o nivells existien en la carrera d'un gremi d'artesans medieval?",
+          options: [
+            "Aprenent, oficial i mestre",
+            "Serf, cavaller i rei",
+            "Monjo, bisbe i papa",
+            "Pagès, mercader i noble"
+          ],
+          correct: 0,
+          explanation: "Un jove començava com a aprenent sens sou, passava a oficial cobrant un salari, i si feia una 'obra mestra' es convertia en mestre artesà."
+        },
+        {
+          question: "Quin nom tenia el recinte fortificat situat a la part alta de les ciutats musulmanes on vivia el governador?",
+          options: [
+            "L'alcassaba",
+            "La catedral",
+            "El claustre",
+            "L'escriptorium"
+          ],
+          correct: 0,
+          explanation: "L'alcassaba era un castell fortificat a la part elevada de la ciutat d'Al-Andalus, destinat a la defensa i residència de les autoritats."
+        },
+        {
+          question: "Quin estil arquitectònic medieval destaca per les seves catedrals altes, arcs apuntats i grans vitralls de colors?",
+          options: [
+            "Art Gòtic",
+            "Art Romànic",
+            "Art Paleocristià",
+            "Art Mudar"
+          ],
+          correct: 0,
+          explanation: "L'art gòtic (segles XII-XV) permetia fer edificis molt més alts i lluminosos gràcies als arcs apuntats i als arbotants que sostenien els murs."
+        },
+        {
+          question: "Per quina ruta de pelegrinatge religiós i cultural viatjaven milers d'europeus fins a Galícia durant l'Edat Mitjana?",
+          options: [
+            "El Camí de Sant Jaume",
+            "La Ruta de la Seda",
+            "El Camí de la Sal",
+            "La Via Augusta"
+          ],
+          correct: 0,
+          explanation: "El Camí de Sant Jaume va ser una via de pelegrinatge fonamental que va connectar la cultura, l'art i les idees de tota Europa amb la península Ibèrica."
+        },
+        {
+          question: "Què va ser la Pesta Negra que va arribar a Europa l'any 1348?",
+          options: [
+            "Una epidèmia molt greu que va provocar la mort de gairebé un terç de la població europea",
+            "Una guerra de cent anys entre dos reis feudals",
+            "Una plaga d'insectes que va destruir tots els conreus de blat",
+            "Una sequera extrema que va durar més de 20 anys"
+          ],
+          correct: 0,
+          explanation: "La Pesta Negra (1348) va ser una malaltia contagiosa devastadora transmesa per les puces de les rates, causant una enorme crisi demogràfica i econòmica."
+        },
+        {
+          question: "Com s'anomenava el taller del monestir on els monjos copiaven i il·lustraven els llibres a mà?",
+          options: [
+            "Escriptorium (scriptorium)",
+            "Refectori",
+            "Claustre",
+            "Campanar"
+          ],
+          correct: 0,
+          explanation: "A l'escriptorium, els monjos copistes escrivien sobre pergaminatges tots els llibres a mà abans que s'inventés la impremta."
+        },
+        {
+          question: "Quin nou grup social va néixer a les ciutats (burgs) format per comerciants i artesans lliures?",
+          options: [
+            "La burgesia",
+            "La noblesa de sang",
+            "El clergat regular",
+            "Els serfs de la gleba"
+          ],
+          correct: 0,
+          explanation: "Els habitants dels burgs (ciutats) van rebre el nom de burgesia. No depenien de cap senyor feudal i es guanyaven la vida amb el comerç o els oficis."
+        },
+        {
+          question: "Quin comte va unificar diversos comtats catalans al segle IX i està vinculat a la llegenda de les quatre barres?",
+          options: [
+            "Guifré el Pilós",
+            "Jaume I",
+            "Pere el Gran",
+            "Borrell II"
+          ],
+          correct: 0,
+          explanation: "Guifré el Pilós va reunir diferents comtats catalans i la tradició posterior li atribueix l'origen de la bandera de les quatre barres de sang."
+        }
+      ]
+    };
+
+    // ESTAT DE LA PARTIDA
+    let currentLevel = 1;
+    let questions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let userAnswers = [];
+    let questionAnswered = false;
+
+    // BARREJAR ARRAY (Algorisme Fisher-Yates)
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // INICIAR EL JOC
+    function startGame(level) {
+      currentLevel = level;
+      
+      // Obtenir el banc de preguntes corresponent
+      const rawBank = level === 1 ? questionBank.level1 : questionBank.level2;
+      
+      // Barrejar i agafar fins a 10 preguntes per partida
+      questions = shuffleArray(rawBank).slice(0, 10).map(q => {
+        // Preparem opcions barrejades per no tenir la correcta sempre a la posició 0
+        const optionObjects = q.options.map((opt, idx) => ({
+          text: opt,
+          isCorrect: idx === q.correct
+        }));
+        const shuffledOptions = shuffleArray(optionObjects);
+        const newCorrectIndex = shuffledOptions.findIndex(o => o.isCorrect);
+
+        return {
+          question: q.question,
+          options: shuffledOptions.map(o => o.text),
+          correct: newCorrectIndex,
+          explanation: q.explanation
+        };
+      });
+
+      currentQuestionIndex = 0;
+      score = 0;
+      userAnswers = [];
+
+      // UI
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('results-screen').classList.add('hidden');
+      document.getElementById('quiz-screen').classList.remove('hidden');
+
+      const levelBadge = document.getElementById('level-badge');
+      if (level === 1) {
+        levelBadge.textContent = "Nivell 1: Escuder";
+        levelBadge.className = "bg-amber-700 text-amber-100 text-xs font-bold px-3 py-1 rounded-full uppercase font-medieval";
+      } else {
+        levelBadge.textContent = "Nivell 2: Cavaller";
+        levelBadge.className = "bg-amber-950 text-amber-200 text-xs font-bold px-3 py-1 rounded-full uppercase font-medieval border border-amber-600";
+      }
+
+      showQuestion();
+    }
+
+    // MOSTRAR PREGUNTA
+    function showQuestion() {
+      questionAnswered = false;
+      const q = questions[currentQuestionIndex];
+
+      // Actualitzar comptadors
+      document.getElementById('current-q').textContent = currentQuestionIndex + 1;
+      document.getElementById('total-q').textContent = questions.length;
+      document.getElementById('score-count').textContent = score;
+
+      // Barra de progrés
+      const progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+      // Text de la pregunta
+      document.getElementById('question-text').textContent = q.question;
+
+      // Ocultar feedback i botó següent
+      document.getElementById('feedback-box').classList.add('hidden');
+      document.getElementById('next-btn').classList.add('hidden');
+
+      // Generar botons d'opcions
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      q.options.forEach((optionText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `btn-option w-full text-left p-4 rounded-xl border-2 border-amber-200 bg-white font-medium text-slate-800 flex items-center justify-between shadow-sm`;
+        btn.onclick = () => selectOption(idx);
+        
+        btn.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-7 h-7 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center font-bold text-sm border border-amber-300">
+              ${String.fromCharCode(65 + idx)}
+            </span>
+            <span class="text-sm sm:text-base">${optionText}</span>
+          </div>
+          <span class="indicator text-lg"></span>
+        `;
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    // SELECCIONAR RESPOSTA
+    function selectOption(selectedIndex) {
+      if (questionAnswered) return;
+      questionAnswered = true;
+
+      const q = questions[currentQuestionIndex];
+      const isCorrect = selectedIndex === q.correct;
+      const optionButtons = document.querySelectorAll('.btn-option');
+
+      // Desactivar tots els botons
+      optionButtons.forEach(btn => btn.disabled = true);
+
+      // Guardar resposta per al resum
+      userAnswers.push({
+        question: q.question,
+        userIndex: selectedIndex,
+        correctIndex: q.correct,
+        userOptionText: q.options[selectedIndex],
+        correctOptionText: q.options[q.correct],
+        isCorrect: isCorrect,
+        explanation: q.explanation
+      });
+
+      // Estil visual dels botons segons si és correcte o incorrecte
+      optionButtons.forEach((btn, idx) => {
+        if (idx === q.correct) {
+          btn.classList.remove('bg-white', 'border-amber-200');
+          btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-950', 'font-semibold');
+          btn.querySelector('.indicator').textContent = '✅';
+        }
+        if (idx === selectedIndex && !isCorrect) {
+          btn.classList.remove('bg-white', 'border-amber-200');
+          btn.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-950');
+          btn.querySelector('.indicator').textContent = '❌';
+        }
+      });
+
+      // Configurar quadre de feedback pedagògic
+      const feedbackBox = document.getElementById('feedback-box');
+      const feedbackHeader = document.getElementById('feedback-header');
+      const feedbackText = document.getElementById('feedback-text');
+      const reminder = document.getElementById('correct-answer-reminder');
+
+      feedbackBox.classList.remove('hidden', 'bg-emerald-100/90', 'border-emerald-400', 'text-emerald-950', 'bg-rose-100/90', 'border-rose-400', 'text-rose-950');
+
+      if (isCorrect) {
+        score++;
+        document.getElementById('score-count').textContent = score;
+
+        feedbackBox.classList.add('bg-emerald-100/90', 'border', 'border-emerald-400', 'text-emerald-950');
+        feedbackHeader.innerHTML = `<span>🎉</span> <span>Molt bé! Resposta Correcta</span>`;
+        feedbackText.textContent = q.explanation;
+        reminder.classList.add('hidden');
+      } else {
+        feedbackBox.classList.add('bg-rose-100/90', 'border', 'border-rose-400', 'text-rose-950');
+        feedbackHeader.innerHTML = `<span>💡</span> <span>Ho has intentat, però no és correcte!</span>`;
+        feedbackText.textContent = q.explanation;
+
+        reminder.classList.remove('hidden');
+        reminder.innerHTML = `📌 <strong>La resposta correcta era:</strong> ${q.options[q.correct]}`;
+      }
+
+      // Mostrar botó de continuar
+      document.getElementById('next-btn').classList.remove('hidden');
+    }
+
+    // SEGÜENT PREGUNTA O RESULTATS
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    // MOSTRAR RESULTATS FINALS
+    function showResults() {
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('results-screen').classList.remove('hidden');
+
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('final-total').textContent = questions.length;
+
+      const percentage = (score / questions.length) * 100;
+      const icon = document.getElementById('result-icon');
+      const title = document.getElementById('result-title');
+      const subtitle = document.getElementById('result-subtitle');
+      const msg = document.getElementById('performance-msg');
+
+      if (percentage === 100) {
+        icon.textContent = "👑";
+        title.textContent = "¡Perfecte! Gran Mestre/a de la Història";
+        subtitle.textContent = "Has encertat TOTES les preguntes. Enhorabona!";
+        msg.textContent = "Nivell d'Aprenentatge: Excel·lent (100%)";
+      } else if (percentage >= 70) {
+        icon.textContent = "⚔️";
+        title.textContent = "¡Molt bé, Gran Cavaller/a!";
+        subtitle.textContent = "Tens molt bon domini del Tema 8 de l'Edat Mitjana.";
+        msg.textContent = "Nivell d'Aprenentatge: Notable";
+      } else if (percentage >= 50) {
+        icon.textContent = "🛡️";
+        title.textContent = "¡Bona feina, Escuder/a!";
+        subtitle.textContent = "Has superat la meitat del repte, però pots millorar revisant els detalls.";
+        msg.textContent = "Nivell d'Aprenentatge: Aprovat";
+      } else {
+        icon.textContent = "📜";
+        title.textContent = "¡Segueix practicant!";
+        subtitle.textContent = "Revisa les explicacions d'aquí sota i torna-ho a intentar.";
+        msg.textContent = "Nivell d'Aprenentatge: En procés de millora";
+      }
+
+      // Generar llista de repàs amb explicacions
+      const reviewList = document.getElementById('review-list');
+      reviewList.innerHTML = '';
+
+      userAnswers.forEach((ans, idx) => {
+        const item = document.createElement('div');
+        item.className = `p-3.5 rounded-xl border text-xs sm:text-sm ${
+          ans.isCorrect 
+            ? 'bg-emerald-50 border-emerald-200 text-emerald-950' 
+            : 'bg-rose-50 border-rose-200 text-rose-950'
+        }`;
+
+        item.innerHTML = `
+          <div class="font-bold mb-1 flex items-start justify-between gap-2">
+            <span>${idx + 1}. ${ans.question}</span>
+            <span>${ans.isCorrect ? '✅' : '❌'}</span>
+          </div>
+          ${!ans.isCorrect ? `
+            <div class="text-rose-800 mb-1">
+              • La teva resposta: <span class="line-through">${ans.userOptionText}</span>
+            </div>
+            <div class="text-emerald-800 font-semibold mb-1">
+              • Resposta correcta: ${ans.correctOptionText}
+            </div>
+          ` : ''}
+          <div class="mt-2 pt-2 border-t border-slate-200/60 text-slate-700 italic">
+            📚 <strong>Explicació:</strong> ${ans.explanation}
+          </div>
+        `;
+        reviewList.appendChild(item);
+      });
+    }
+
+    // TORNAR A JUGAR EL MATEIX NIVELL (amb noves preguntes aleatòries)
+    function restartLevel() {
+      startGame(currentLevel);
+    }
+
+    // TORNAR A LA PANTALLA D'INICI
+    function goHome() {
+      document.getElementById('results-screen').classList.add('hidden');
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('start-screen').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
