@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qüestionari Interactiu: Tema 8 - Institucions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .option-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .hidden { display: none; }
+        .transition-all { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-indigo-50 min-h-screen font-sans text-slate-900">
+
+    <div class="max-w-3xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-indigo-900 mb-2">Repàs Institucions: Catalunya, Espanya i UE</h1>
+            <p class="text-indigo-600 font-medium">Tema 8 - Coneixement del Medi 6è</p>
+            
+            <div class="mt-6 flex justify-center items-center gap-6">
+                <div class="text-center">
+                    <p class="text-xs uppercase tracking-widest text-slate-500 font-bold">Pregunta</p>
+                    <p id="progress-text" class="text-lg font-bold text-indigo-700">0 / 10</p>
+                </div>
+                <div class="h-8 w-px bg-slate-300"></div>
+                <div class="text-center">
+                    <p class="text-xs uppercase tracking-widest text-slate-500 font-bold">Puntuació</p>
+                    <p id="score-text" class="text-lg font-bold text-green-600">0</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Quiz Container -->
+        <main id="quiz-container" class="bg-white rounded-3xl shadow-2xl p-6 md:p-10 transition-all border border-indigo-100">
+            
+            <div id="question-box">
+                <h2 id="question-text" class="text-xl md:text-2xl font-bold mb-8 text-slate-800 leading-tight">Preparant les preguntes...</h2>
+                <div id="options-container" class="grid grid-cols-1 gap-4">
+                    <!-- Opcions -->
+                </div>
+            </div>
+
+            <!-- Feedback Section -->
+            <div id="feedback-container" class="mt-8 p-6 rounded-2xl hidden transition-all">
+                <div class="flex items-start gap-4">
+                    <div id="feedback-icon" class="text-3xl p-2 bg-white rounded-full shadow-sm"></div>
+                    <div>
+                        <p id="feedback-title" class="font-black text-xl uppercase tracking-tight"></p>
+                        <p id="feedback-text" class="text-slate-700 mt-2 leading-relaxed"></p>
+                    </div>
+                </div>
+                <button id="next-btn" class="mt-8 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 px-6 rounded-xl transition shadow-lg uppercase tracking-widest">
+                    Següent Pregunta
+                </button>
+            </div>
+        </main>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="bg-white rounded-3xl shadow-2xl p-10 text-center hidden border-4 border-indigo-200">
+            <div id="result-emoji" class="text-7xl mb-6"></div>
+            <h2 class="text-4xl font-black text-indigo-900 mb-4">Resultat Final</h2>
+            <div class="inline-block bg-indigo-50 px-8 py-4 rounded-2xl mb-6">
+                <p class="text-5xl font-black text-indigo-600" id="final-score-display"></p>
+            </div>
+            <p id="final-message" class="text-xl text-slate-600 mb-10 px-4"></p>
+            <button onclick="startQuiz()" class="bg-green-500 hover:bg-green-600 text-white font-black py-4 px-10 rounded-xl transition shadow-xl uppercase tracking-widest">
+                Torna a jugar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Base de dades ampliada a partir de les fonts del notebook
+        const allQuestions = [
+            {
+                question: "Segons l'Estatut, quines són les llengües oficials de Catalunya?",
+                options: ["Només el català", "El català i el castellà", "El català, el castellà i l'aranès", "El català i el francès"],
+                correct: 2,
+                explanation: "L'Estatut reconeix el català com a llengua pròpia, però estableix que el català, el castellà i l'occità (anomenat aranès a l'Aran) són oficials."
+            },
+            {
+                question: "Quina institució de la Generalitat s'encarrega de defensar els drets i les llibertats de la ciutadania davant l'Administració?",
+                options: ["El Parlament", "El Tribunal Superior de Justícia", "El Síndic de Greuges", "El Consell Executiu"],
+                correct: 2,
+                explanation: "El Síndic de Greuges és el defensor de les persones i supervisa que la Generalitat funcioni correctament."
+            },
+            {
+                question: "Quants diputats i diputades formen el Parlament de Catalunya?",
+                options: ["100", "135", "350", "27"],
+                correct: 1,
+                explanation: "El Parlament de Catalunya està format per 135 membres escollits cada quatre anys."
+            },
+            {
+                question: "Qui tria el President o Presidenta de la Generalitat?",
+                options: ["Els ciutadans directament", "El Rei d'Espanya", "El Parlament de Catalunya", "El Govern d'Espanya"],
+                correct: 2,
+                explanation: "Després de les eleccions, els diputats del Parlament voten per triar qui serà el President de la Generalitat."
+            },
+            {
+                question: "Quin document garanteix els drets fonamentals de tots els ciutadans espanyols des de 1978?",
+                options: ["L'Estatut d'Autonomia", "La Constitució Espanyola", "El Tractat de Maastrich", "La Carta Magna de Cadis"],
+                correct: 1,
+                explanation: "La Constitució de 1978 és la llei suprema de l'Estat que defineix Espanya com un estat social i democràtic de dret."
+            },
+            {
+                question: "Qui té la funció de sancionar (signar) les lleis i representar l'Estat internacionalment?",
+                options: ["El President del Govern", "El Rei", "El President del Congrés", "El Tribunal Constitucional"],
+                correct: 1,
+                explanation: "En una monarquia parlamentària, el Rei és el Cap de l'Estat i té funcions representatives, però no governa."
+            },
+            {
+                question: "Quina institució europea actua com el 'govern' de la Unió i proposa les lleis?",
+                options: ["El Parlament Europeu", "La Comissió Europea", "El Consell Europeu", "El Tribunal de Comptes"],
+                correct: 1,
+                explanation: "La Comissió Europea gestiona les polítiques comunes, executa el pressupost i proposa noves lleis."
+            },
+            {
+                question: "Què és l'Espai Schengen?",
+                options: ["Una moneda única", "Una zona on es pot viatjar sense controls fronterers", "Un tribunal de justícia", "Un exèrcit europeu"],
+                correct: 1,
+                explanation: "L'Espai Schengen permet la lliure circulació de persones entre la majoria de països de la UE sense passar per duanes."
+            },
+            {
+                question: "A quina ciutat es troba la seu oficial del Parlament Europeu?",
+                options: ["Brussel·les", "Estrasburg", "Luxemburg", "Totes les anteriors"],
+                correct: 1,
+                explanation: "Encara que té oficines a Brussel·les i Luxemburg, la seu oficial de les sessions plenàries és Estrasburg (França)."
+            },
+            {
+                question: "Quin d'aquests és un dels valors fonamentals de la UE segons la Carta dels Drets Fonamentals?",
+                options: ["El respecte a la dignitat humana", "La superioritat econòmica", "L'ús obligatori de l'euro", "La prohibició de les fronteres externes"],
+                correct: 0,
+                explanation: "La dignitat humana, la llibertat, la democràcia i la igualtat són els pilars ètics de la Unió."
+            },
+            {
+                question: "Quina institució espanyola vetlla per la independència dels jutges?",
+                options: ["El Ministeri de Justícia", "El Consell General del Poder Judicial", "El Tribunal Suprem", "El Congrés"],
+                correct: 1,
+                explanation: "El CGPJ és l'òrgan de govern dels jutges per assegurar que el poder judicial sigui independent dels polítics."
+            },
+            {
+                question: "En quin any va entrar Espanya a la Comunitat Econòmica Europea (actual UE)?",
+                options: ["1978", "1986", "1992", "2002"],
+                correct: 1,
+                explanation: "Espanya va signar el tractat d'adhesió el 1985 i va entrar oficialment l'1 de gener de 1986."
+            },
+            {
+                question: "Quin és el repte de la UE relacionat amb el medi ambient?",
+                options: ["El Pacte Verd Europeu", "L'Espai Schengen", "El programa Erasmus", "La Zona Euro"],
+                correct: 0,
+                explanation: "El Pacte Verd busca que Europa sigui el primer continent climàticament neutre l'any 2050."
+            },
+            {
+                question: "Qui forma el Consell Executiu de la Generalitat?",
+                options: ["Els Diputats", "Els Jutges", "El President i els Consellers", "Els Alcaldes"],
+                correct: 2,
+                explanation: "El Consell Executiu és el 'Govern' de la Generalitat, format pel President i els titulars dels departaments (consellers)."
+            },
+            {
+                question: "Quina institució europea fixa els tipus d'interès i gestiona l'euro?",
+                options: ["El Banc Central Europeu", "La Comissió Europea", "El Fons Monetari", "El Consell de la UE"],
+                correct: 0,
+                explanation: "El BCE, amb seu a Frankfurt, té com a missió mantenir l'estabilitat dels preus a la zona euro."
+            }
+        ];
+
+        let quizQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function startQuiz() {
+            // Barrejar i triar 10 preguntes aleatòries
+            quizQuestions = [...allQuestions]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 10);
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('score-text').innerText = "0";
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = quizQuestions[currentQuestionIndex];
+            const container = document.getElementById('options-container');
+            
+            document.getElementById('question-text').innerText = q.question;
+            document.getElementById('progress-text').innerText = `${currentQuestionIndex + 1} / ${quizQuestions.length}`;
+            document.getElementById('feedback-container').classList.add('hidden');
+            
+            container.innerHTML = '';
+            q.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.innerText = option;
+                btn.className = "option-btn w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-indigo-300 hover:bg-indigo-50 transition-all font-semibold text-slate-700 shadow-sm bg-white";
+                btn.onclick = () => checkAnswer(index);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const q = quizQuestions[currentQuestionIndex];
+            const isCorrect = selectedIndex === q.correct;
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            buttons.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                buttons[selectedIndex].className = "option-btn w-full text-left p-5 rounded-2xl border-2 border-green-500 bg-green-50 font-bold text-green-700 shadow-inner";
+                score++;
+                document.getElementById('score-text').innerText = score;
+                showFeedback(true, "Excel·lent!", q.explanation);
+            } else {
+                buttons[selectedIndex].className = "option-btn w-full text-left p-5 rounded-2xl border-2 border-red-500 bg-red-50 font-bold text-red-700 shadow-inner";
+                buttons[q.correct].className = "option-btn w-full text-left p-5 rounded-2xl border-2 border-green-500 bg-green-50 font-bold text-green-700";
+                showFeedback(false, "No és correcte", q.explanation);
+            }
+        }
+
+        function showFeedback(isCorrect, title, text) {
+            const fContainer = document.getElementById('feedback-container');
+            const fTitle = document.getElementById('feedback-title');
+            const fIcon = document.getElementById('feedback-icon');
+            
+            fContainer.classList.remove('hidden');
+            if (isCorrect) {
+                fContainer.className = "mt-8 p-6 rounded-2xl bg-green-100 border-2 border-green-200 transition-all scale-105";
+                fTitle.className = "font-black text-xl text-green-800 uppercase tracking-tight";
+                fIcon.innerText = "⭐";
+            } else {
+                fContainer.className = "mt-8 p-6 rounded-2xl bg-orange-100 border-2 border-orange-200 transition-all";
+                fTitle.className = "font-black text-xl text-orange-800 uppercase tracking-tight";
+                fIcon.innerText = "💡";
+            }
+            
+            fTitle.innerText = title;
+            document.getElementById('feedback-text').innerText = text;
+        }
+
+        document.getElementById('next-btn').onclick = () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizQuestions.length) {
+                loadQuestion();
+            } else {
+                showFinalResults();
+            }
+        };
+
+        function showFinalResults() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            
+            const display = document.getElementById('final-score-display');
+            const msg = document.getElementById('final-message');
+            const emoji = document.getElementById('result-emoji');
+            
+            display.innerText = `${score} / 10`;
+            
+            if (score === 10) {
+                emoji.innerText = "👑";
+                msg.innerText = "Increïble! Ho saps absolutament tot sobre les institucions!";
+            } else if (score >= 8) {
+                emoji.innerText = "🌟";
+                msg.innerText = "Molt bona puntuació! Estàs molt ben preparat/ada per l'examen.";
+            } else if (score >= 5) {
+                emoji.innerText = "📚";
+                msg.innerText = "Has aprovat, però repassa els errors per treure millor nota la pròxima vegada.";
+            } else {
+                emoji.innerText = "🔍";
+                msg.innerText = "T'ha costat una mica. Torna a llegir el Tema 8 i prova-ho de nou!";
+            }
+        }
+
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>
