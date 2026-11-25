@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joc de Preguntes: Paisatges i Societat (6è de Primària)</title>
+    <!-- Tailwind CSS per a un disseny espectacular i adaptable -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome per a les icones del joc -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts per a una tipografia clara i moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+        }
+        .title-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-blue-50 to-emerald-50 min-h-screen flex flex-col justify-between text-slate-800">
+
+    <!-- Capçalera del joc -->
+    <header class="bg-white shadow-md border-b-4 border-indigo-500 py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="goHome()">
+                <div class="bg-indigo-500 text-white p-2 rounded-xl shadow-lg">
+                    <i class="fa-solid fa-earth-europe text-2xl animate-spin-slow"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-indigo-700 title-font tracking-wide">Paisatges i Societat</h1>
+                    <p class="text-xs text-indigo-400 font-semibold uppercase tracking-wider hidden sm:block">6è de Primària - Tema 5</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleAudio()" id="audioBtn" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 p-2.5 rounded-xl transition duration-300">
+                    <i id="audioIcon" class="fa-solid fa-volume-high text-lg"></i>
+                </button>
+                <div class="bg-emerald-100 border border-emerald-300 px-4 py-2 rounded-xl text-emerald-800 font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-star text-amber-500 animate-pulse"></i>
+                    <span id="globalScore">0</span> <span class="text-xs font-normal text-emerald-600">punts</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contingut principal -->
+    <main class="max-w-4xl w-full mx-auto p-4 md:p-6 flex-grow flex items-center justify-center">
+        
+        <!-- PANTALLA D'INICI -->
+        <div id="screen-home" class="w-full bg-white rounded-3xl p-6 md:p-10 shadow-2xl border-b-8 border-indigo-200 transition-all duration-300">
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="bg-amber-100 text-amber-800 text-sm font-bold px-4 py-1.5 rounded-full uppercase tracking-wider inline-block mb-4">Repàs d'Estudis Socials</span>
+                <h2 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-6 title-font leading-tight">Estàs a punt per posar a prova els teus coneixements?</h2>
+                <p class="text-slate-600 text-lg mb-8 leading-relaxed">
+                    Practica el tema de geografia d'Espanya i Europa, repassa les Comunitats Autònomes, les províncies, la població i els sectors econòmics amb jocs divertits.
+                </p>
+
+                <!-- Targetes de modes de joc -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
+                    <!-- Targeta Quiz -->
+                    <button onclick="startQuizMode()" class="group bg-gradient-to-r from-indigo-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition duration-300 flex items-start gap-4">
+                        <div class="bg-white/20 p-4 rounded-xl text-3xl">
+                            <i class="fa-solid fa-circle-question"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-1 title-font text-white flex items-center gap-2">
+                                Trivial del Tema 5
+                                <i class="fa-solid fa-arrow-right text-sm group-hover:translate-x-1 transition"></i>
+                            </h3>
+                            <p class="text-indigo-100 text-sm">Respon preguntes sobre relleu, rius, població i economia. Pots triar categories!</p>
+                        </div>
+                    </button>
+
+                    <!-- Targeta Joc de Províncies -->
+                    <button onclick="startProvincesMode()" class="group bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition duration-300 flex items-start gap-4">
+                        <div class="bg-white/20 p-4 rounded-xl text-3xl">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-1 title-font text-white flex items-center gap-2">
+                                El Repte de les Províncies
+                                <i class="fa-solid fa-arrow-right text-sm group-hover:translate-x-1 transition"></i>
+                            </h3>
+                            <p class="text-emerald-100 text-sm">On es troba cada província? Associa-les ràpidament a la seva Comunitat Autònoma!</p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="border-t border-slate-100 pt-6 flex flex-wrap justify-center gap-6 text-sm text-slate-500">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-graduation-cap text-indigo-500"></i> Adaptat per a 6è de Primària</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check-double text-emerald-500"></i> Preguntes basades en el temari</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-trophy text-amber-500"></i> Guanya medalles</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA: SELECCIÓ DE CATEGORIA (QUIZ) -->
+        <div id="screen-category" class="w-full bg-white rounded-3xl p-6 md:p-10 shadow-2xl border-b-8 border-indigo-200 hidden transition-all duration-300">
+            <div class="mb-6 flex items-center justify-between">
+                <button onclick="goHome()" class="text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-2 transition">
+                    <i class="fa-solid fa-chevron-left"></i> Torna enrere
+                </button>
+                <span class="text-slate-400 font-semibold text-sm">TRIA CATEGORIA</span>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2 title-font text-center">De què et vols examinar avui?</h2>
+            <p class="text-slate-500 text-center mb-8">Tria una categoria per començar o repassa-ho tot de cop.</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                <!-- Categoria 1 -->
+                <button onclick="selectCategory('all')" class="p-6 rounded-2xl border-2 border-indigo-100 hover:border-indigo-500 bg-indigo-50/50 hover:bg-indigo-50 text-left transition group">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="bg-indigo-600 text-white p-2.5 rounded-xl"><i class="fa-solid fa-cubes text-lg"></i></span>
+                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-indigo-500 transition"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 title-font">Tot el temari barrejat</h3>
+                    <p class="text-slate-500 text-xs mt-1">El repte suprem! Preguntes de tots els temes del resum.</p>
+                </button>
+
+                <!-- Categoria 2 -->
+                <button onclick="selectCategory('territori')" class="p-6 rounded-2xl border-2 border-amber-100 hover:border-amber-500 bg-amber-50/50 hover:bg-amber-50 text-left transition group">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="bg-amber-500 text-white p-2.5 rounded-xl"><i class="fa-solid fa-map text-lg"></i></span>
+                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-amber-500 transition"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 title-font">El Territori d'Espanya</h3>
+                    <p class="text-slate-500 text-xs mt-1">Límits territorials, organització, comunitats i províncies.</p>
+                </button>
+
+                <!-- Categoria 3 -->
+                <button onclick="selectCategory('relleu')" class="p-6 rounded-2xl border-2 border-blue-100 hover:border-blue-500 bg-blue-50/50 hover:bg-blue-50 text-left transition group">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="bg-blue-500 text-white p-2.5 rounded-xl"><i class="fa-solid fa-mountain text-lg"></i></span>
+                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-blue-500 transition"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 title-font">El Relleu i els Rius</h3>
+                    <p class="text-slate-500 text-xs mt-1">Meseta Central, serralades d'Espanya i Europa, i els rius.</p>
+                </button>
+
+                <!-- Categoria 4 -->
+                <button onclick="selectCategory('economia')" class="p-6 rounded-2xl border-2 border-emerald-100 hover:border-emerald-500 bg-emerald-50/50 hover:bg-emerald-50 text-left transition group">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="bg-emerald-500 text-white p-2.5 rounded-xl"><i class="fa-solid fa-chart-pie text-lg"></i></span>
+                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-emerald-500 transition"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 title-font">Població i Economia</h3>
+                    <p class="text-slate-500 text-xs mt-1">La població espanyola, l'envelliment i els 3 sectors econòmics.</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- PANTALLA: JOC DE PREGUNTES (QUIZ ACTIVE) -->
+        <div id="screen-quiz" class="w-full bg-white rounded-3xl p-6 md:p-8 shadow-2xl border-b-8 border-indigo-200 hidden transition-all duration-300">
+            <!-- Capçalera del Quiz -->
+            <div class="flex justify-between items-center mb-4 gap-4">
+                <button onclick="goHome()" class="text-slate-400 hover:text-slate-600 font-semibold text-sm transition flex items-center gap-1">
+                    <i class="fa-solid fa-circle-xmark"></i> Surt
+                </button>
+                <div class="flex items-center gap-2">
+                    <span id="quiz-badge" class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Categoria</span>
+                    <span id="quiz-streak" class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full hidden items-center gap-1">
+                        <i class="fa-solid fa-fire text-orange-500"></i> <span id="streak-num">0</span> en ratxa
+                    </span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-6">
+                <div class="flex justify-between text-xs text-slate-400 font-bold mb-1">
+                    <span>Pregunta <span id="current-question-num">1</span> de <span id="total-questions-num">10</span></span>
+                    <span id="quiz-progress-percent">10% completat</span>
+                </div>
+                <div class="w-full bg-slate-100 h-3.5 rounded-full overflow-hidden border border-slate-200">
+                    <div id="quiz-progress-bar" class="bg-gradient-to-r from-indigo-500 to-blue-500 h-full transition-all duration-300" style="width: 10%"></div>
+                </div>
+            </div>
+
+            <!-- Pregunta -->
+            <div class="mb-8">
+                <h3 id="quiz-question-text" class="text-xl md:text-2xl font-bold text-slate-800 leading-snug title-font">
+                    Aquí anirà la pregunta?
+                </h3>
+            </div>
+
+            <!-- Opcions de resposta -->
+            <div id="quiz-options-container" class="space-y-3.5 mb-6">
+                <!-- Es generaran dinàmicament per JS -->
+            </div>
+
+            <!-- Caixa d'Explicació / Feedback -->
+            <div id="quiz-feedback" class="p-5 rounded-2xl mb-6 hidden transform transition duration-300 scale-95 opacity-0">
+                <div class="flex gap-3">
+                    <span id="feedback-icon-wrapper" class="text-2xl mt-0.5"></span>
+                    <div>
+                        <h4 id="feedback-title" class="font-extrabold text-base mb-1 title-font">Resposta</h4>
+                        <p id="feedback-text" class="text-sm leading-relaxed">Explicació pedagògica per als nens...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botó per continuar -->
+            <div class="flex justify-end">
+                <button id="quiz-next-btn" onclick="nextQuestion()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-lg px-8 py-3.5 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform active:scale-95 flex items-center gap-2" disabled>
+                    Següent pregunta <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- PANTALLA: MINI-JOC DE PROVÍNCIES -->
+        <div id="screen-provinces" class="w-full bg-white rounded-3xl p-6 md:p-8 shadow-2xl border-b-8 border-emerald-200 hidden transition-all duration-300">
+            <!-- Capçalera del joc -->
+            <div class="flex justify-between items-center mb-4">
+                <button onclick="goHome()" class="text-slate-400 hover:text-slate-600 font-semibold text-sm transition flex items-center gap-1">
+                    <i class="fa-solid fa-circle-xmark"></i> Surt
+                </button>
+                <div class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase flex items-center gap-1">
+                    <i class="fa-solid fa-map"></i> Repte Territorial
+                </div>
+            </div>
+
+            <!-- Barra de progrés -->
+            <div class="mb-6">
+                <div class="flex justify-between text-xs text-slate-400 font-bold mb-1">
+                    <span>Pregunta <span id="prov-current-num">1</span> de 10</span>
+                    <span id="prov-score-badge" class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> Encertades: <span id="prov-correct-count">0</span></span>
+                </div>
+                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                    <div id="prov-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-500 h-full transition-all duration-300" style="width: 10%"></div>
+                </div>
+            </div>
+
+            <!-- Pregunta del joc de províncies -->
+            <div class="text-center mb-8">
+                <p class="text-slate-500 uppercase tracking-wider text-xs font-bold mb-1">A quina Comunitat Autònoma pertany la província de...</p>
+                <h3 id="prov-province-name" class="text-3xl md:text-5xl font-extrabold text-indigo-600 title-font tracking-wide py-4 bg-indigo-50/50 rounded-2xl border border-indigo-100 inline-block px-10 my-2 animate-bounce">
+                    Girona
+                </h3>
+            </div>
+
+            <!-- Opcions (Comunitats) -->
+            <div id="prov-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                <!-- Dinàmic -->
+            </div>
+
+            <!-- Feedback -->
+            <div id="prov-feedback" class="p-4 rounded-xl mb-6 text-center text-sm font-bold hidden">
+                Feedback
+            </div>
+
+            <!-- Botó següent província -->
+            <div class="flex justify-end">
+                <button id="prov-next-btn" onclick="nextProvinceQuestion()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-lg px-8 py-3.5 rounded-2xl shadow-lg transition duration-300 flex items-center gap-2" disabled>
+                    Següent província <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- PANTALLA: PUNTUACIÓ I RESULTATS -->
+        <div id="screen-results" class="w-full bg-white rounded-3xl p-6 md:p-10 shadow-2xl border-b-8 border-indigo-200 hidden text-center transition-all duration-300">
+            <div class="max-w-md mx-auto">
+                <div class="relative inline-block mb-6">
+                    <div id="medal-container" class="text-8xl text-amber-500 drop-shadow-lg">
+                        <i class="fa-solid fa-trophy animate-bounce"></i>
+                    </div>
+                </div>
+
+                <h2 id="results-title" class="text-3xl font-extrabold text-slate-800 mb-2 title-font">Fantàstic!</h2>
+                <p id="results-message" class="text-slate-500 mb-6">Has completat el qüestionari de pràctica de Geografia.</p>
+
+                <!-- Targeta de puntuació detallada -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-8 grid grid-cols-2 gap-4">
+                    <div class="border-r border-slate-200">
+                        <p class="text-xs text-slate-400 font-bold uppercase">Respostes Correctes</p>
+                        <p class="text-3xl font-extrabold text-indigo-600 mt-1"><span id="results-correct">0</span> / <span id="results-total">10</span></p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 font-bold uppercase">Punts Guanyats</p>
+                        <p class="text-3xl font-extrabold text-emerald-600 mt-1">+<span id="results-score">0</span></p>
+                    </div>
+                </div>
+
+                <!-- Botons d'acció -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="goHome()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-lg px-6 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-house"></i> Torna a l'Inici
+                    </button>
+                    <button id="retryBtn" onclick="retryGame()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-lg px-6 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Torna a Jugar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Peu de pàgina -->
+    <footer class="bg-slate-800 text-slate-400 text-center py-4 px-6 border-t border-slate-700 text-xs">
+        <div class="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>Creat per a l'aprenentatge actiu dels alumnes de 6è de Primària.</p>
+            <p class="font-semibold text-slate-300"><i class="fa-solid fa-graduation-cap"></i> Recursos Educatius de Geografia</p>
+        </div>
+    </footer>
+
+    <!-- LOGICA DE JOC AMB JAVASCRIPT -->
+    <script>
+        // --- BASE DE DADES DE PREGUNTES (Basades en els documents del Tema 5) ---
+        const QUESTIONS = [
+            // Territori d'Espanya
+            {
+                id: 1,
+                category: "territori",
+                question: "On està situada Espanya geogràficament?",
+                options: [
+                    "A l'extrem nord-oriental d'Europa, limitant amb el mar Negre.",
+                    "A l'extrem sud-occidental d'Europa, ocupant la major part de la península Ibèrica.",
+                    "Al centre del continent europeu, limitant amb Alemanya i França.",
+                    "A l'extrem sud-oriental, banyada íntegrament pel mar Mediterrani."
+                ],
+                correct: 1,
+                explanation: "Espanya està situada a l'extrem sud-occidental d'Europa. Comprèn la major part de la península Ibèrica, les illes Balears, les illes Canàries, i les ciutats de Ceuta i Melilla."
+            },
+            {
+                id: 2,
+                category: "territori",
+                question: "Quines són les dues ciutats autònomes d'Espanya situades al nord d'Àfrica?",
+                options: [
+                    "Las Palmas i Santa Cruz de Tenerife.",
+                    "Eivissa i Palma de Mallorca.",
+                    "Ceuta i Melilla.",
+                    "Cadis i Almeria."
+                ],
+                correct: 2,
+                explanation: "Espanya s'organitza políticament en 17 comunitats autònomes i 2 ciutats autònomes (Ceuta i Melilla, situades al nord del continent africà)."
+            },
+            {
+                id: 3,
+                category: "territori",
+                question: "Amb quins països o mars limita Espanya per l'Oest?",
+                options: [
+                    "Amb França i el mar Cantàbric.",
+                    "Amb l'oceà Atlàntic i Portugal.",
+                    "Amb el mar Mediterrani i el Marroc.",
+                    "Amb Itàlia i Grècia."
+                ],
+                correct: 1,
+                explanation: "A l'oest, la península Ibèrica limita directament amb l'oceà Atlàntic i amb la República de Portugal."
+            },
+            {
+                id: 4,
+                category: "territori",
+                question: "Com està organitzat administrativament el territori d'Espanya?",
+                options: [
+                    "En 17 comunitats autònomes, 2 ciutats autònomes, 50 províncies i més de 8.000 municipis.",
+                    "En 50 comunitats autònomes, 17 províncies i 2 ciutats federades.",
+                    "En 3 grans regions administratives i sense províncies per simplificar.",
+                    "Únicament en 17 províncies que coincideixen amb els rius més importants."
+                ],
+                correct: 0,
+                explanation: "El territori espanyol s'organitza en 17 comunitats autònomes, 2 ciutats autònomes (Ceuta i Melilla), 50 províncies en total i més de 8.000 municipis."
+            },
+            // Relleu d'Espanya i Europa
+            {
+                id: 5,
+                category: "relleu",
+                question: "Quina gran unitat de relleu estructura el centre de la península Ibèrica?",
+                options: [
+                    "La Depressió de l'Ebre.",
+                    "La Meseta Central (un gran altiplà).",
+                    "Els Pirineus orientals.",
+                    "La Serralada Bètica."
+                ],
+                correct: 1,
+                explanation: "La Meseta Central és el cor geogràfic d'Espanya, un gran altiplà que ocupa gairebé tot el centre de la península."
+            },
+            {
+                id: 6,
+                category: "relleu",
+                question: "Quines muntanyes es troben a l'interior de la pròpia Meseta Central?",
+                options: [
+                    "Els Pirineus i els Sistemes Bètics.",
+                    "El Sistema Central i els Monts de Toledo.",
+                    "La Serralada Cantàbrica i la Serralada Ibèrica.",
+                    "Sierra Morena i els Pirineus."
+                ],
+                correct: 1,
+                explanation: "A l'interior de la Meseta hi trobem dues serralades que la divideixen en dues meitats: el Sistema Central i els Monts de Toledo."
+            },
+            {
+                id: 7,
+                category: "relleu",
+                question: "Quin és el cim més alt d'Europa i on es troba situat?",
+                options: [
+                    "El Mulhacén, situat a Sierra Nevada.",
+                    "L'Elbrus, situat a la serralada del Caucas.",
+                    "El Mont Blanc, situat als Alps italians.",
+                    "L'Aneto, situat als Pirineus aragonesos."
+                ],
+                correct: 1,
+                explanation: "El cim més alt de tota Europa és el mont Elbrus, situat a la serralada del Caucas (sud d'Europa), amb una alçada de 5.642 metres."
+            },
+            {
+                id: 8,
+                category: "relleu",
+                question: "Quin és el riu més llarg del continent europeu?",
+                options: [
+                    "El riu Danubi.",
+                    "El riu Volga.",
+                    "El riu Tajo.",
+                    "El riu Rin."
+                ],
+                correct: 1,
+                explanation: "El riu Volga és el més llarg de tot Europa i desemboca al mar Caspi."
+            },
+            {
+                id: 9,
+                category: "relleu",
+                question: "Quin riu d'Europa és famós per creuar molts països i desembocar al Mar Negre?",
+                options: [
+                    "El riu Danubi.",
+                    "El riu Ebre.",
+                    "El riu Guadalquivir.",
+                    "El riu Sena."
+                ],
+                correct: 0,
+                explanation: "El Danubi és un riu clau de l'Europa central i de l'est que neix a Alemanya, passa per diverses capitals europees i acaba desembocant al Mar Negre."
+            },
+            // Població i Economia
+            {
+                id: 10,
+                category: "economia",
+                question: "Quines són les característiques principals de la població d'Espanya actualment?",
+                options: [
+                    "Té una natalitat molt alta i una esperança de vida molt baixa.",
+                    "Supera els 47 milions d'habitants, amb baixa natalitat, baixa mortalitat i un fort envelliment.",
+                    "La població és molt jove perquè tothom té molts fills.",
+                    "Té una esperança de vida molt baixa (uns 50 anys de mitjana)."
+                ],
+                correct: 1,
+                explanation: "La població espanyola supera els 47 milions d'habitants. Es defineix per un creixement demogràfic baix (pocs naixements i poques morts), una alta esperança de vida (~83 anys) i un progressiu envelliment de la societat."
+            },
+            {
+                id: 11,
+                category: "economia",
+                question: "Què s'entén pel concepte de l' 'Espanya buidada'?",
+                options: [
+                    "Les províncies costaneres que es queden sense aigua a l'estiu.",
+                    "La distribució desigual de la població, concentrada a la costa, illes i Madrid, deixant l'interior gairebé buit.",
+                    "Els pobles industrials que tanquen durant les vacances de Nadal.",
+                    "Les platges de les illes Canàries que es queden sense turistes al setembre."
+                ],
+                correct: 1,
+                explanation: "La població està distribuïda de manera molt desigual: es concentra principalment a la perifèria costanera, les illes i la Comunitat de Madrid. L'interior peninsular té densitats molt baixes d'habitants, fet conegut com l' 'Espanya buidada'."
+            },
+            {
+                id: 12,
+                category: "economia",
+                question: "Quin sector econòmic ocupa el percentatge més gran de treballadors a Espanya (76%)?",
+                options: [
+                    "El Sector Primari (agricultura, ramaderia i pesca).",
+                    "El Sector Secundari (indústria i construcció).",
+                    "El Sector Terciari o de Serveis (turisme, comerç, transports, educació, etc.).",
+                    "La mineria i l'explotació forestal."
+                ],
+                correct: 2,
+                explanation: "A Espanya, el sector terciari o de serveis és el clar motor econòmic: ocupa prop del 76% de la població activa en treballs relacionats amb el turisme, el comerç i els serveis."
+            },
+            {
+                id: 13,
+                category: "economia",
+                question: "Quines són les activitats pròpies del Sector Primari (que només ocupa el 4% de la població)?",
+                options: [
+                    "L'agricultura (secà i regadiu), la ramaderia i la pesca.",
+                    "La fabricació de cotxes, la siderúrgia i la construcció de cases.",
+                    "Els hospitals, les escoles i les oficines de bancs.",
+                    "El disseny de pàgines web i el turisme de platja."
+                ],
+                correct: 0,
+                explanation: "El sector primari inclou aquelles feines que obtenen matèries primeres directament de la natura: l'agricultura (cereals, oliveres, hortalisses), la ramaderia (porcs, ovelles) i la pesca marítima."
+            },
+            {
+                id: 14,
+                category: "economia",
+                question: "Quines són les regions d'Espanya on més es concentra l'activitat industrial (Sector Secundari)?",
+                options: [
+                    "Principalment Extremadura, les Illes Balears i Castella-la Manxa.",
+                    "Catalunya, Madrid, la Comunitat Valenciana i el País Basc.",
+                    "Múrcia, Andalusia i les Illes Canàries.",
+                    "La Rioja, Cantàbria i Ceuta."
+                ],
+                correct: 1,
+                explanation: "Tot i que s'ha estès a moltes zones, l'activitat industrial espanyola històricament i actualment es concentra amb força a Catalunya, la Comunitat de Madrid, el País Basc i la Comunitat Valenciana."
+            }
+        ];
+
+        // --- BASE DE DADES DE PROVÍNCIES I LES SEVES COMUNITATS (De la PDF) ---
+        const PROVINCES_DB = [
+            { prov: "Almeria", com: "Andalusia" },
+            { prov: "Cadis", com: "Andalusia" },
+            { prov: "Còrdova", com: "Andalusia" },
+            { prov: "Granada", com: "Andalusia" },
+            { prov: "Huelva", com: "Andalusia" },
+            { prov: "Jaén", com: "Andalusia" },
+            { prov: "Màlaga", com: "Andalusia" },
+            { prov: "Sevilla", com: "Andalusia" },
+            { prov: "Osca", com: "Aragó" },
+            { prov: "Terol", com: "Aragó" },
+            { prov: "Saragossa", com: "Aragó" },
+            { prov: "Astúries", com: "Astúries (Principat d')" },
+            { prov: "Illes Balears", com: "Illes Balears" },
+            { prov: "Las Palmas", com: "Canàries" },
+            { prov: "Santa Cruz de Tenerife", com: "Canàries" },
+            { prov: "Cantàbria", com: "Cantàbria" },
+            { prov: "Àvila", com: "Castella i Lleó" },
+            { prov: "Burgos", com: "Castella i Lleó" },
+            { prov: "Lleó", com: "Castella i Lleó" },
+            { prov: "Palència", com: "Castella i Lleó" },
+            { prov: "Salamanca", com: "Castella i Lleó" },
+            { prov: "Segòvia", com: "Castella i Lleó" },
+            { prov: "Sòria", com: "Castella i Lleó" },
+            { prov: "Valladolid", com: "Castella i Lleó" },
+            { prov: "Zamora", com: "Castella i Lleó" },
+            { prov: "Albacete", com: "Castella-la Manxa" },
+            { prov: "Ciudad Real", com: "Castella-la Manxa" },
+            { prov: "Conca", com: "Castella-la Manxa" },
+            { prov: "Guadalajara", com: "Castella-la Manxa" },
+            { prov: "Toledo", com: "Castella-la Manxa" },
+            { prov: "Barcelona", com: "Catalunya" },
+            { prov: "Girona", com: "Catalunya" },
+            { prov: "Lleida", com: "Catalunya" },
+            { prov: "Tarragona", com: "Catalunya" },
+            { prov: "Alacant", com: "Comunitat Valenciana" },
+            { prov: "Castelló", com: "Comunitat Valenciana" },
+            { prov: "València", com: "Comunitat Valenciana" },
+            { prov: "Badajoz", com: "Extremadura" },
+            { prov: "Càceres", com: "Extremadura" },
+            { prov: "La Corunya", com: "Galícia" },
+            { prov: "Lugo", com: "Galícia" },
+            { prov: "Ourense", com: "Galícia" },
+            { prov: "Pontevedra", com: "Galícia" },
+            { prov: "Madrid", com: "Madrid (Comunitat de)" },
+            { prov: "Múrcia", com: "Múrcia (Regió de)" },
+            { prov: "Navarra", com: "Navarra (Comunitat Foral de)" },
+            { prov: "Àlaba", com: "País Basc" },
+            { prov: "Guipúscoa", com: "País Basc" },
+            { prov: "Biscaia", com: "País Basc" },
+            { prov: "La Rioja", com: "La Rioja" }
+        ];
+
+        // --- SISTEMA D'AUDIO SENSE ARXIUS EXTERNS (WEB AUDIO API) ---
+        let audioContext = null;
+        let isAudioEnabled = true;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function toggleAudio() {
+            isAudioEnabled = !isAudioEnabled;
+            const icon = document.getElementById("audioIcon");
+            const btn = document.getElementById("audioBtn");
+            if (isAudioEnabled) {
+                icon.className = "fa-solid fa-volume-high text-lg";
+                btn.classList.remove("bg-rose-100", "text-rose-700");
+                btn.classList.add("bg-indigo-100", "text-indigo-700");
+                playTone(440, 0.1, 'sine'); // Un so suau d'activació
+            } else {
+                icon.className = "fa-solid fa-volume-xmark text-lg";
+                btn.classList.remove("bg-indigo-100", "text-indigo-700");
+                btn.classList.add("bg-rose-100", "text-rose-700");
+            }
+        }
+
+        function playTone(freq, duration, type = 'sine') {
+            if (!isAudioEnabled) return;
+            try {
+                initAudio();
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                
+                osc.type = type;
+                osc.frequency.value = freq;
+                
+                gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+                // Rampes suaus per evitar clics d'àudio
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                
+                osc.start();
+                osc.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                console.log("No s'ha pogut reproduir l'àudio:", e);
+            }
+        }
+
+        function playSuccessSound() {
+            // Un acord alegre i ascendent
+            playTone(523.25, 0.1, 'triangle'); // C5
+            setTimeout(() => playTone(659.25, 0.1, 'triangle'), 80); // E5
+            setTimeout(() => playTone(783.99, 0.2, 'triangle'), 160); // G5
+        }
+
+        function playErrorSound() {
+            // Un to greu i descendent
+            playTone(220, 0.15, 'sawtooth'); // A3
+            setTimeout(() => playTone(180, 0.25, 'sawtooth'), 120);
+        }
+
+        function playVictorySound() {
+            // Melodia triomfal
+            const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 523.25];
+            const delays = [0, 150, 300, 450, 600, 750];
+            notes.forEach((note, i) => {
+                setTimeout(() => playTone(note, 0.2, 'triangle'), delays[i]);
+            });
+        }
+
+
+        // --- ESTAT DEL JOC ---
+        let currentScreen = 'home';
+        let totalScore = 0;
+        let streak = 0;
+        let selectedCategory = 'all';
+
+        // Variables pel Quiz actiu
+        let quizQuestions = [];
+        let currentQuizIndex = 0;
+        let answersSelectedInCurrent = false;
+        let quizCorrectAnswersCount = 0;
+        let quizEarnedPoints = 0;
+
+        // Variables pel joc de Províncies actiu
+        let provinceQuestionsList = [];
+        let currentProvinceIndex = 0;
+        let provinceCorrectCount = 0;
+        let provinceEarnedPoints = 0;
+        let provinceAnswerSelected = false;
+
+
+        // --- NAVEGACIÓ ENTRE PANTALLES ---
+        function showScreen(screenId) {
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-category').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-provinces').classList.add('hidden');
+            document.getElementById('screen-results').classList.add('hidden');
+
+            const targetScreen = document.getElementById(screenId);
+            targetScreen.classList.remove('hidden');
+            
+            // Efecte visual d'entrada
+            targetScreen.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                targetScreen.classList.remove('opacity-0', 'scale-95');
+                targetScreen.classList.add('opacity-100', 'scale-100', 'transition-all', 'duration-300');
+            }, 50);
+
+            currentScreen = screenId;
+        }
+
+        function goHome() {
+            playTone(300, 0.1);
+            showScreen('screen-home');
+        }
+
+        function updateGlobalScoreDisplay() {
+            document.getElementById("globalScore").innerText = totalScore;
+        }
+
+        // Barrejar llista d'elements (Fisher-Yates)
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+
+        // --- LOGICA DEL TRIVIAL DEL TEMA 5 (QUIZ) ---
+        function startQuizMode() {
+            playTone(400, 0.1);
+            showScreen('screen-category');
+        }
+
+        function selectCategory(category) {
+            playTone(450, 0.1);
+            selectedCategory = category;
+
+            // Filtrar preguntes per categoria
+            if (category === 'all') {
+                quizQuestions = [...QUESTIONS];
+            } else {
+                quizQuestions = QUESTIONS.filter(q => q.category === category);
+            }
+
+            // Barrejar-les i agafar-ne un màxim de 10
+            shuffle(quizQuestions);
+            quizQuestions = quizQuestions.slice(0, 10);
+
+            // Reiniciar estat del Quiz
+            currentQuizIndex = 0;
+            quizCorrectAnswersCount = 0;
+            quizEarnedPoints = 0;
+            streak = 0;
+            document.getElementById("quiz-streak").classList.add("hidden");
+
+            // Preparar i llançar primera pregunta
+            loadQuizQuestion();
+            showScreen('screen-quiz');
+        }
+
+        function loadQuizQuestion() {
+            answersSelectedInCurrent = false;
+            document.getElementById("quiz-next-btn").disabled = true;
+            document.getElementById("quiz-next-btn").classList.add("opacity-50", "cursor-not-allowed");
+            document.getElementById("quiz-feedback").classList.add("hidden");
+
+            const q = quizQuestions[currentQuizIndex];
+            
+            // Actualitzar textos
+            document.getElementById("current-question-num").innerText = currentQuizIndex + 1;
+            document.getElementById("total-questions-num").innerText = quizQuestions.length;
+            
+            const progressPercent = Math.round(((currentQuizIndex) / quizQuestions.length) * 100);
+            document.getElementById("quiz-progress-percent").innerText = progressPercent + "% completat";
+            document.getElementById("quiz-progress-bar").style.width = progressPercent + "%";
+
+            // Establir badge de categoria
+            const badges = {
+                "all": "Tot el temari",
+                "territori": "Territori i Organització",
+                "relleu": "Relleu i Rius",
+                "economia": "Població i Economia"
+            };
+            document.getElementById("quiz-badge").innerText = badges[q.category] || "Geografia";
+
+            document.getElementById("quiz-question-text").innerText = q.question;
+
+            // Generar les 4 opcions
+            const container = document.getElementById("quiz-options-container");
+            container.innerHTML = "";
+
+            q.options.forEach((opt, idx) => {
+                const button = document.createElement("button");
+                button.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 font-medium transition duration-200 flex items-start gap-3 transform hover:scale-[1.01] active:scale-95";
+                button.onclick = () => selectQuizOption(idx);
+                
+                const badge = document.createElement("span");
+                badge.className = "w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-slate-500 shrink-0 text-sm";
+                badge.innerText = String.fromCharCode(65 + idx); // A, B, C, D
+                
+                const text = document.createElement("span");
+                text.className = "text-slate-700 font-semibold";
+                text.innerText = opt;
+
+                button.appendChild(badge);
+                button.appendChild(text);
+                container.appendChild(button);
+            });
+        }
+
+        function selectQuizOption(selectedIndex) {
+            if (answersSelectedInCurrent) return; // No es pot triar un cop ja has contestat
+            answersSelectedInCurrent = true;
+
+            const q = quizQuestions[currentQuizIndex];
+            const container = document.getElementById("quiz-options-container");
+            const buttons = container.children;
+
+            const isCorrect = selectedIndex === q.correct;
+
+            // Deshabilitar següents clics de canvi de resposta
+            for (let btn of buttons) {
+                btn.onclick = null;
+                btn.classList.remove("hover:border-indigo-400", "hover:bg-indigo-50/50");
+            }
+
+            // Aplicar estil de resposta
+            const selectedBtn = buttons[selectedIndex];
+            const correctBtn = buttons[q.correct];
+
+            if (isCorrect) {
+                // Correcte!
+                playSuccessSound();
+                selectedBtn.classList.replace("border-slate-200", "border-emerald-500");
+                selectedBtn.classList.add("bg-emerald-50");
+                selectedBtn.querySelector("span").classList.replace("bg-slate-100", "bg-emerald-500");
+                selectedBtn.querySelector("span").classList.replace("text-slate-500", "text-white");
+                selectedBtn.querySelector("span").innerHTML = '<i class="fa-solid fa-check"></i>';
+                
+                // Càlcul de punts i ratxa
+                quizCorrectAnswersCount++;
+                streak++;
+                let pointsToEarn = 10;
+                
+                // Extra bonus de ratxa
+                if (streak >= 3) {
+                    pointsToEarn += 5;
+                    const streakBadge = document.getElementById("quiz-streak");
+                    document.getElementById("streak-num").innerText = streak;
+                    streakBadge.classList.remove("hidden");
+                    streakBadge.classList.add("animate-bounce");
+                }
+
+                quizEarnedPoints += pointsToEarn;
+                totalScore += pointsToEarn;
+                updateGlobalScoreDisplay();
+
+                // Mostrar Feedback Exitós
+                showFeedback(true, q.explanation);
+
+            } else {
+                // Errat!
+                playErrorSound();
+                streak = 0; // Trenquem la ratxa
+                document.getElementById("quiz-streak").classList.add("hidden");
+
+                // Pintem de vermell la seleccionada incorrectament
+                selectedBtn.classList.replace("border-slate-200", "border-rose-500");
+                selectedBtn.classList.add("bg-rose-50");
+                selectedBtn.querySelector("span").classList.replace("bg-slate-100", "bg-rose-500");
+                selectedBtn.querySelector("span").classList.replace("text-slate-500", "text-white");
+                selectedBtn.querySelector("span").innerHTML = '<i class="fa-solid fa-xmark"></i>';
+
+                // Mostrem quina era la correcta en verd
+                correctBtn.classList.replace("border-slate-200", "border-emerald-500");
+                correctBtn.classList.add("bg-emerald-50");
+                correctBtn.querySelector("span").classList.replace("bg-slate-100", "bg-emerald-500");
+                correctBtn.querySelector("span").classList.replace("text-slate-500", "text-white");
+                correctBtn.querySelector("span").innerHTML = '<i class="fa-solid fa-check"></i>';
+
+                // Mostrar Feedback Erroni
+                showFeedback(false, q.explanation);
+            }
+
+            // Habilitar botó següent
+            const nextBtn = document.getElementById("quiz-next-btn");
+            nextBtn.disabled = false;
+            nextBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+
+        function showFeedback(isSuccess, explanation) {
+            const fb = document.getElementById("quiz-feedback");
+            const title = document.getElementById("feedback-title");
+            const text = document.getElementById("feedback-text");
+            const iconWrapper = document.getElementById("feedback-icon-wrapper");
+
+            fb.classList.remove("hidden", "scale-95", "opacity-0");
+            fb.classList.add("scale-100", "opacity-100");
+
+            if (isSuccess) {
+                fb.className = "p-5 rounded-2xl mb-6 bg-emerald-50 border border-emerald-200 transition-all duration-300";
+                title.innerText = "Molt bé! Resposta correcta";
+                title.className = "font-extrabold text-emerald-800 text-base mb-1 title-font";
+                text.className = "text-sm text-emerald-700 leading-relaxed";
+                iconWrapper.className = "text-2xl mt-0.5 text-emerald-600";
+                iconWrapper.innerHTML = '<i class="fa-solid fa-face-smile"></i>';
+            } else {
+                fb.className = "p-5 rounded-2xl mb-6 bg-rose-50 border border-rose-200 transition-all duration-300";
+                title.innerText = "Oh, quina pena! No és correcte";
+                title.className = "font-extrabold text-rose-800 text-base mb-1 title-font";
+                text.className = "text-sm text-rose-700 leading-relaxed";
+                iconWrapper.className = "text-2xl mt-0.5 text-rose-600";
+                iconWrapper.innerHTML = '<i class="fa-solid fa-face-frown-open"></i>';
+            }
+
+            text.innerText = explanation;
+        }
+
+        function nextQuestion() {
+            playTone(350, 0.1);
+            currentQuizIndex++;
+            if (currentQuizIndex < quizQuestions.length) {
+                loadQuizQuestion();
+            } else {
+                showResults(quizCorrectAnswersCount, quizQuestions.length, quizEarnedPoints);
+            }
+        }
+
+
+        // --- LOGICA DEL REPTE DE LES PROVÍNCIES ---
+        function startProvincesMode() {
+            playTone(400, 0.1);
+            
+            // Generem 10 preguntes de províncies aleatòries
+            let pool = [...PROVINCES_DB];
+            shuffle(pool);
+            provinceQuestionsList = pool.slice(0, 10);
+
+            currentProvinceIndex = 0;
+            provinceCorrectCount = 0;
+            provinceEarnedPoints = 0;
+
+            loadProvinceQuestion();
+            showScreen('screen-provinces');
+        }
+
+        function loadProvinceQuestion() {
+            provinceAnswerSelected = false;
+            document.getElementById("prov-next-btn").disabled = true;
+            document.getElementById("prov-next-btn").classList.add("opacity-50", "cursor-not-allowed");
+            document.getElementById("prov-feedback").classList.add("hidden");
+
+            const currentItem = provinceQuestionsList[currentProvinceIndex];
+
+            // Barra progrés d'aquest mode
+            document.getElementById("prov-current-num").innerText = currentProvinceIndex + 1;
+            document.getElementById("prov-correct-count").innerText = provinceCorrectCount;
+            const progressPercent = Math.round(((currentProvinceIndex) / 10) * 100);
+            document.getElementById("prov-progress-bar").style.width = progressPercent + "%";
+
+            // Mostrar el nom de la província gran i clar
+            document.getElementById("prov-province-name").innerText = currentItem.prov;
+
+            // Generar 4 opcions: la correcta + 3 falses de la DB
+            let options = [currentItem.com];
+            let listOtherCommunities = [...new Set(PROVINCES_DB.map(x => x.com))].filter(com => com !== currentItem.com);
+            shuffle(listOtherCommunities);
+            options.push(listOtherCommunities[0]);
+            options.push(listOtherCommunities[1]);
+            options.push(listOtherCommunities[2]);
+
+            shuffle(options); // Barrejar de nou les 4 opcions perquè no estigui sempre al mateix lloc
+
+            const container = document.getElementById("prov-options-container");
+            container.innerHTML = "";
+
+            options.forEach((opt) => {
+                const button = document.createElement("button");
+                button.className = "w-full text-center p-4 rounded-xl border-2 border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/50 font-bold transition duration-200 text-slate-700 bg-white shadow-sm hover:shadow active:scale-95";
+                button.innerText = opt;
+                button.onclick = () => selectProvinceOption(button, opt, currentItem.com);
+                container.appendChild(button);
+            });
+        }
+
+        function selectProvinceOption(clickedBtn, chosenOption, correctOption) {
+            if (provinceAnswerSelected) return;
+            provinceAnswerSelected = true;
+
+            const container = document.getElementById("prov-options-container");
+            const buttons = container.children;
+
+            // Deshabilitar respostes consecutives
+            for (let btn of buttons) {
+                btn.onclick = null;
+                btn.classList.remove("hover:border-emerald-400", "hover:bg-emerald-50/50");
+            }
+
+            const isCorrect = chosenOption === correctOption;
+            const feedbackBox = document.getElementById("prov-feedback");
+            feedbackBox.classList.remove("hidden");
+
+            if (isCorrect) {
+                playSuccessSound();
+                clickedBtn.classList.replace("border-slate-200", "border-emerald-500");
+                clickedBtn.classList.add("bg-emerald-50", "text-emerald-700");
+                
+                provinceCorrectCount++;
+                provinceEarnedPoints += 10;
+                totalScore += 10;
+                updateGlobalScoreDisplay();
+
+                feedbackBox.className = "p-3 rounded-xl mb-6 text-center text-sm font-bold bg-emerald-100 text-emerald-800 animate-pulse";
+                feedbackBox.innerText = "✅ Molt bé! Associació perfecta.";
+            } else {
+                playErrorSound();
+                clickedBtn.classList.replace("border-slate-200", "border-rose-500");
+                clickedBtn.classList.add("bg-rose-50", "text-rose-700");
+
+                // Busquem quina era la correcta i la marquem en verd
+                for (let btn of buttons) {
+                    if (btn.innerText === correctOption) {
+                        btn.classList.replace("border-slate-200", "border-emerald-500");
+                        btn.classList.add("bg-emerald-50", "text-emerald-700");
+                    }
+                }
+
+                feedbackBox.className = "p-3 rounded-xl mb-6 text-center text-sm font-bold bg-rose-100 text-rose-800";
+                feedbackBox.innerText = `❌ No... ${provinceQuestionsList[currentProvinceIndex].prov} pertany a ${correctOption}.`;
+            }
+
+            // Habilitar botó següent
+            const nextBtn = document.getElementById("prov-next-btn");
+            nextBtn.disabled = false;
+            nextBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+
+        function nextProvinceQuestion() {
+            playTone(350, 0.1);
+            currentProvinceIndex++;
+            if (currentProvinceIndex < 10) {
+                loadProvinceQuestion();
+            } else {
+                // S'ha acabat, mostrem resultats
+                showResults(provinceCorrectCount, 10, provinceEarnedPoints, true);
+            }
+        }
+
+
+        // --- MOSTRAR PANTALLA DE RESULTATS I PREMIS ---
+        function showResults(correctAnswers, totalQuestions, earnedPoints, isProvincesGame = false) {
+            playVictorySound();
+            showScreen('screen-results');
+
+            // Actualitzar la barra de dalt si escau
+            updateGlobalScoreDisplay();
+
+            // Configurar botó de reintentar segons on venim
+            const retryBtn = document.getElementById("retryBtn");
+            if (isProvincesGame) {
+                retryBtn.setAttribute("onclick", "startProvincesMode()");
+            } else {
+                retryBtn.setAttribute("onclick", "selectCategory(selectedCategory)");
+            }
+
+            // Càlcul de rendiment
+            const ratio = correctAnswers / totalQuestions;
+            let titleText = "Un inici fantàstic!";
+            let msgText = "Segueix repassant per ser un/a autèntic/a geògraf/a de 6è!";
+            let medalHtml = '<i class="fa-solid fa-medal text-amber-600 animate-pulse"></i>'; // Bronze per defecte
+
+            if (ratio === 1.0) {
+                titleText = "Excel·lent! Perfecte!";
+                msgText = "Increïble! Has encertat totes les respostes sense cap errada! Ets un mestre!";
+                medalHtml = '<i class="fa-solid fa-trophy text-amber-500 animate-bounce text-9xl"></i>'; // Or / Trofeu
+            } else if (ratio >= 0.8) {
+                titleText = "Uau, impressionant!";
+                msgText = "Tens uns coneixements molt sòlids del tema de Paisatges i Societat. Molt bona feina!";
+                medalHtml = '<i class="fa-solid fa-medal text-yellow-400 animate-pulse text-8xl"></i>'; // Plata
+            } else if (ratio >= 0.5) {
+                titleText = "Molt bé!";
+                msgText = "Vas per molt bon camí. Un parell d'intents més i ho sabràs absolutament tot.";
+                medalHtml = '<i class="fa-solid fa-medal text-amber-600 animate-pulse text-8xl"></i>'; // Bronze
+            } else {
+                titleText = "Bona intenció!";
+                msgText = "L'error forma part del camí! Torna a repassar el resum del tema i torna-ho a provar, segur que millores!";
+                medalHtml = '<i class="fa-solid fa-seedling text-emerald-500 text-8xl animate-pulse"></i>'; // Plàntula educació
+            }
+
+            document.getElementById("results-title").innerText = titleText;
+            document.getElementById("results-message").innerText = msgText;
+            document.getElementById("results-correct").innerText = correctAnswers;
+            document.getElementById("results-total").innerText = totalQuestions;
+            document.getElementById("results-score").innerText = earnedPoints;
+            document.getElementById("medal-container").innerHTML = medalHtml;
+        }
+
+        // Iniciar des d'un principi la pantalla d'inici
+        window.onload = function() {
+            // Un petit to suau de benvinguda quan cliquen a qualsevol lloc (política de navegadors amb l'àudio)
+            document.body.addEventListener('click', function init() {
+                initAudio();
+                document.body.removeEventListener('click', init);
+            });
+            showScreen('screen-home');
+        };
+    </script>
+</body>
+</html>
